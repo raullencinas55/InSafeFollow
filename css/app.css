@@ -1153,12 +1153,14 @@ html, body {
   box-sizing: border-box;
 }
 
-.user-row-swipe-bg.swiping-right {
+.user-row-swipe-bg.swiping-right,
+.user-item-row.swiping-right .user-row-swipe-bg {
   background: #fef3c7;
   color: #b45309;
 }
 
-.user-row-swipe-bg.swiping-left {
+.user-row-swipe-bg.swiping-left,
+.user-item-row.swiping-left .user-row-swipe-bg {
   background: var(--ig-sunset);
   color: #ffffff;
 }
@@ -1173,8 +1175,10 @@ html, body {
 }
 
 .swipe-action-label-left.active-icon,
-.swipe-action-label-right.active-icon {
-  opacity: 1;
+.swipe-action-label-right.active-icon,
+.user-item-row.swiping-right .swipe-action-label-left,
+.user-item-row.swiping-left .swipe-action-label-right {
+  opacity: 1 !important;
 }
 
 .user-row-content {
@@ -1338,12 +1342,47 @@ html, body {
   filter: brightness(1.05);
 }
 
+.row-action-btn.btn-ignore {
+  background: #ffffff;
+  color: #334155;
+  border: 1.5px solid #000000;
+  box-shadow: 1.5px 1.5px 0px #000000;
+}
+
 .row-action-btn.btn-ignore:hover {
   background: var(--color-yellow);
+  color: #000000;
+}
+
+.row-action-btn.btn-restore {
+  background: #f0fdf4;
+  color: #166534;
+  border: 1.5px solid #000000;
+  box-shadow: 1.5px 1.5px 0px #000000;
 }
 
 .row-action-btn.btn-restore:hover {
   background: #bbf7d0;
+  color: #000000;
+}
+
+.filter-chip-btn.chip-archived-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #ffffff;
+  color: #000000;
+  border-color: #000000;
+  margin-left: auto;
+}
+
+.filter-chip-btn.chip-archived-toggle:hover {
+  background: var(--color-yellow);
+}
+
+.filter-chip-btn.chip-archived-toggle.active {
+  background: #000000;
+  color: #ffffff;
 }
 
 /* Spinner */

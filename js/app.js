@@ -82,7 +82,8 @@ document.addEventListener('DOMContentLoaded', () => {
     receivedRequests: 'Solicitudes Recibidas',
     recentlyUnfollowed: 'Dejados de seguir',
     followingHashtags: 'Hashtags seguidos',
-    closeFriends: 'Mejores Amigos'
+    closeFriends: 'Mejores Amigos',
+    whitelistedUsers: 'Cuentas archivadas'
   };
 
   // Pestañas y Métricas
@@ -241,15 +242,40 @@ document.addEventListener('DOMContentLoaded', () => {
     // Botones de Filtro de Ordenación (Chips Directos)
     const filterChipBtns = document.querySelectorAll('.filter-chip-btn');
     filterChipBtns.forEach(btn => {
+      if (!btn.hasAttribute('data-sort')) return;
       btn.addEventListener('click', () => {
         const sortVal = btn.getAttribute('data-sort') || 'default';
         sortMode = sortVal;
-        filterChipBtns.forEach(b => b.classList.toggle('active', b === btn));
+        filterChipBtns.forEach(b => {
+          if (b.hasAttribute('data-sort')) {
+            b.classList.toggle('active', b === btn);
+          }
+        });
         visibleCount = BATCH_SIZE;
         if (userListWindow) userListWindow.scrollTop = 0;
         renderResults();
       });
     });
+
+    // Botón de alternar lista de Archivadas desde la barra de herramientas
+    const toggleArchivedListBtn = document.getElementById('toggleArchivedListBtn');
+    if (toggleArchivedListBtn) {
+      toggleArchivedListBtn.addEventListener('click', () => {
+        if (activeTab === 'whitelistedUsers') {
+          switchTab('notFollowingBack', true);
+        } else {
+          switchTab('whitelistedUsers', true);
+        }
+      });
+    }
+
+    // Botón de Archivadas en Navbar Desktop
+    const openArchivedBtn = document.getElementById('openArchivedBtn');
+    if (openArchivedBtn) {
+      openArchivedBtn.addEventListener('click', () => {
+        switchTab('whitelistedUsers', true);
+      });
+    }
 
     // Alternador del Gráfico de Crecimiento
     if (toggleChartBtn && growthChartContainer) {
@@ -338,6 +364,13 @@ document.addEventListener('DOMContentLoaded', () => {
       drawerLegalBtn.addEventListener('click', () => {
         closeAppDrawer();
         if (legalModal) legalModal.classList.add('active');
+      });
+    }
+    const drawerArchivedBtn = document.getElementById('drawerArchivedBtn');
+    if (drawerArchivedBtn) {
+      drawerArchivedBtn.addEventListener('click', () => {
+        closeAppDrawer();
+        switchTab('whitelistedUsers', true);
       });
     }
     if (drawerUploadBtn) {
@@ -510,7 +543,8 @@ document.addEventListener('DOMContentLoaded', () => {
       receivedRequests: (currentDiffs.receivedRequests || []).length,
       recentlyUnfollowed: (currentDiffs.recentlyUnfollowed || []).length,
       followingHashtags: (currentDiffs.followingHashtags || []).length,
-      closeFriends: (currentDiffs.closeFriends || []).length
+      closeFriends: (currentDiffs.closeFriends || []).length,
+      whitelistedUsers: (currentDiffs.whitelistedUsers || []).length
     };
 
     document.querySelectorAll('[data-count]').forEach(el => {
@@ -519,6 +553,11 @@ document.addEventListener('DOMContentLoaded', () => {
         el.textContent = counts[key];
       }
     });
+
+    const archivedChipCount = document.getElementById('archivedChipCount');
+    if (archivedChipCount) {
+      archivedChipCount.textContent = counts.whitelistedUsers;
+    }
 
     if (activeCategoryBadge && currentDiffs && currentDiffs[activeTab]) {
       activeCategoryBadge.textContent = currentDiffs[activeTab].length;
@@ -630,6 +669,18 @@ document.addEventListener('DOMContentLoaded', () => {
         activeCategoryBadge.className = 'badge badge-warning';
       } else {
         activeCategoryBadge.className = 'badge badge-neutral';
+      }
+    }
+
+    const toggleArchivedListBtn = document.getElementById('toggleArchivedListBtn');
+    if (toggleArchivedListBtn) {
+      const isArchived = (tab === 'whitelistedUsers');
+      toggleArchivedListBtn.classList.toggle('active', isArchived);
+      if (isArchived) {
+        toggleArchivedListBtn.innerHTML = '← Volver a No te siguen';
+      } else {
+        const count = (currentDiffs && currentDiffs.whitelistedUsers) ? currentDiffs.whitelistedUsers.length : 0;
+        toggleArchivedListBtn.innerHTML = `📦 Archivadas (<span id="archivedChipCount">${count}</span>)`;
       }
     }
 
@@ -1036,6 +1087,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const initial = user.username.charAt(0).toUpperCase();
     const isHashtag = activeTab === 'followingHashtags';
+    const isArchivedTab = activeTab === 'whitelistedUsers';
+    const isNotFollowingBack = activeTab === 'notFollowingBack';
+
     const igUrl = isHashtag 
       ? `https://www.instagram.com/explore/tags/${user.username}/`
       : (user.href || `https://www.instagram.com/${user.username}/`);
@@ -1053,12 +1107,42 @@ document.addEventListener('DOMContentLoaded', () => {
         dateString = `Recibida el: ${d.toLocaleDateString()}`;
       } else if (activeTab === 'pendingRequests') {
         dateString = `Enviada el: ${d.toLocaleDateString()}`;
+      } else if (activeTab === 'whitelistedUsers') {
+        dateString = `Archivado • ${d.toLocaleDateString()}`;
       } else {
         dateString = `Siguiendo desde: ${d.toLocaleDateString()}`;
       }
     }
 
+    let actionBtnHtml = '';
+    if (isArchivedTab) {
+      actionBtnHtml = `
+        <button type="button" class="row-action-btn btn-restore" title="Restaurar a la lista principal">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="1 4 1 10 7 10"></polyline>
+            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+          </svg>
+          <span class="action-btn-text">Restaurar</span>
+        </button>
+      `;
+    } else if (isNotFollowingBack) {
+      actionBtnHtml = `
+        <button type="button" class="row-action-btn btn-ignore" title="Archivar cuenta para que no aparezca en No te siguen">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="21 8 21 21 3 21 3 8"></polyline>
+            <rect x="1" y="3" width="22" height="5"></rect>
+            <line x1="10" y1="12" x2="14" y2="12"></line>
+          </svg>
+          <span class="action-btn-text">Archivar</span>
+        </button>
+      `;
+    }
+
     row.innerHTML = `
+      <div class="user-row-swipe-bg">
+        <span class="swipe-action-label-left">${isArchivedTab ? '↩️ Restaurar' : '📦 Archivar'}</span>
+        <span class="swipe-action-label-right">Instagram ↗</span>
+      </div>
       <div class="user-row-content">
         <div class="user-identity">
           <div class="user-monogram-avatar"><span>${isHashtag ? '#' : initial}</span></div>
@@ -1069,6 +1153,7 @@ document.addEventListener('DOMContentLoaded', () => {
           </div>
         </div>
         <div class="user-item-actions">
+          ${actionBtnHtml}
           <a href="${igUrl}" target="_blank" rel="noopener noreferrer" class="row-action-btn btn-ig-open" title="${isHashtag ? 'Ver hashtag en Instagram' : 'Ver perfil en Instagram'}">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
@@ -1079,6 +1164,115 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
       </div>
     `;
+
+    // Clic en botón Archivar
+    const ignoreBtn = row.querySelector('.btn-ignore');
+    if (ignoreBtn) {
+      ignoreBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        InSafeFollowStorage.addToWhitelist(user.username);
+        currentDiffs = InSafeFollowStorage.calculateDiffs();
+        updateCounters();
+        renderResults();
+      });
+    }
+
+    // Clic en botón Restaurar
+    const restoreBtn = row.querySelector('.btn-restore');
+    if (restoreBtn) {
+      restoreBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        InSafeFollowStorage.removeFromWhitelist(user.username);
+        currentDiffs = InSafeFollowStorage.calculateDiffs();
+        updateCounters();
+        renderResults();
+      });
+    }
+
+    // Gestos táctiles de deslizamiento (Touch Swipe)
+    const rowContent = row.querySelector('.user-row-content');
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let currentDx = 0;
+    let isHorizontalSwipe = false;
+
+    if (rowContent) {
+      rowContent.addEventListener('touchstart', (e) => {
+        if (e.touches.length !== 1) return;
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+        currentDx = 0;
+        isHorizontalSwipe = false;
+        rowContent.style.transition = 'none';
+      }, { passive: true });
+
+      rowContent.addEventListener('touchmove', (e) => {
+        if (e.touches.length !== 1) return;
+        const dx = e.touches[0].clientX - touchStartX;
+        const dy = e.touches[0].clientY - touchStartY;
+
+        if (!isHorizontalSwipe) {
+          if (Math.abs(dy) > Math.abs(dx)) {
+            return; // Permite el scroll vertical natural
+          }
+          if (Math.abs(dx) > 10) {
+            isHorizontalSwipe = true;
+          }
+        }
+
+        if (isHorizontalSwipe) {
+          if (e.cancelable) e.preventDefault();
+          currentDx = Math.max(-130, Math.min(130, dx));
+          rowContent.style.transform = `translateX(${currentDx}px)`;
+
+          if (currentDx > 25) {
+            row.classList.add('swiping-right');
+            row.classList.remove('swiping-left');
+          } else if (currentDx < -25) {
+            row.classList.add('swiping-left');
+            row.classList.remove('swiping-right');
+          } else {
+            row.classList.remove('swiping-right', 'swiping-left');
+          }
+        }
+      }, { passive: false });
+
+      rowContent.addEventListener('touchend', () => {
+        rowContent.style.transition = 'transform 0.22s cubic-bezier(0.16, 1, 0.3, 1)';
+        row.classList.remove('swiping-right', 'swiping-left');
+
+        if (currentDx > 65) {
+          // Deslizar a la derecha: Archivar o Restaurar
+          rowContent.style.transform = 'translateX(105%)';
+          setTimeout(() => {
+            if (activeTab === 'whitelistedUsers') {
+              InSafeFollowStorage.removeFromWhitelist(user.username);
+            } else {
+              InSafeFollowStorage.addToWhitelist(user.username);
+            }
+            currentDiffs = InSafeFollowStorage.calculateDiffs();
+            updateCounters();
+            renderResults();
+          }, 180);
+        } else if (currentDx < -65) {
+          // Deslizar a la izquierda: Abrir perfil en Instagram
+          rowContent.style.transform = 'translateX(0px)';
+          window.open(igUrl, '_blank', 'noopener,noreferrer');
+        } else {
+          rowContent.style.transform = 'translateX(0px)';
+        }
+        currentDx = 0;
+        isHorizontalSwipe = false;
+      });
+
+      rowContent.addEventListener('touchcancel', () => {
+        rowContent.style.transition = 'transform 0.2s ease';
+        rowContent.style.transform = 'translateX(0px)';
+        row.classList.remove('swiping-right', 'swiping-left');
+        currentDx = 0;
+        isHorizontalSwipe = false;
+      });
+    }
 
     return row;
   }

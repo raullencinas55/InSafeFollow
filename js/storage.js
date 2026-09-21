@@ -102,10 +102,15 @@ window.InSafeFollowStorage = (function () {
 
     // 1. No te siguen de vuelta (Following - Followers)
     const notFollowingBack = [];
+    const whitelistedUsers = [];
     current.following.forEach(u => {
       const lower = u.username.toLowerCase();
       if (!followersMap.has(lower)) {
-        notFollowingBack.push(u);
+        if (whitelistSet.has(lower)) {
+          whitelistedUsers.push(u);
+        } else {
+          notFollowingBack.push(u);
+        }
       }
     });
 
@@ -160,6 +165,7 @@ window.InSafeFollowStorage = (function () {
       newFollowers,
       mutual,
       fans,
+      whitelistedUsers,
       pendingRequests: current.pendingRequests || [],
       recentlyUnfollowed: current.recentlyUnfollowed || [],
       blockedProfiles: current.blockedProfiles || [],

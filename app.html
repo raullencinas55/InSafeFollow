@@ -41,6 +41,14 @@
             </svg>
             <span class="nav-btn-text">Legal</span>
           </button>
+          <button id="openArchivedBtn" class="nav-btn" title="Ver cuentas archivadas / ignoradas">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="21 8 21 21 3 21 3 8"></polyline>
+              <rect x="1" y="3" width="22" height="5"></rect>
+              <line x1="10" y1="12" x2="14" y2="12"></line>
+            </svg>
+            <span class="nav-btn-text">Archivadas</span>
+          </button>
           <button id="openResetBtn" class="nav-btn" title="Restablecer datos locales">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="3 6 5 6 21 6"></polyline>
@@ -358,6 +366,10 @@
                 <span>Mejores amigos</span>
                 <span class="badge badge-success" data-count="closeFriends">0</span>
               </button>
+              <button class="segment-btn" data-tab="whitelistedUsers">
+                <span>Archivadas</span>
+                <span class="badge badge-neutral" data-count="whitelistedUsers">0</span>
+              </button>
             </div>
           </div>
 
@@ -422,6 +434,9 @@
               <button type="button" class="filter-chip-btn" data-sort="date-asc">Más antiguos</button>
               <button type="button" class="filter-chip-btn" data-sort="alpha-asc">A → Z</button>
               <button type="button" class="filter-chip-btn" data-sort="alpha-desc">Z → A</button>
+              <button type="button" class="filter-chip-btn chip-archived-toggle" id="toggleArchivedListBtn" title="Ver cuentas archivadas / ignoradas">
+                📦 Archivadas (<span id="archivedChipCount">0</span>)
+              </button>
             </div>
           </div>
 
@@ -667,6 +682,14 @@
             <line x1="12" y1="8" x2="12.01" y2="8"></line>
           </svg>
           <span>Marco Legal y RGPD</span>
+        </button>
+        <button id="drawerArchivedBtn" class="drawer-link" style="text-align: left; width: 100%;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="21 8 21 21 3 21 3 8"></polyline>
+            <rect x="1" y="3" width="22" height="5"></rect>
+            <line x1="10" y1="12" x2="14" y2="12"></line>
+          </svg>
+          <span>Cuentas archivadas</span>
         </button>
         <button id="drawerUploadBtn" class="drawer-link primary" style="text-align: left; width: 100%;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
