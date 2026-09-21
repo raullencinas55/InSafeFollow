@@ -1,0 +1,34 @@
+# Personal and exported data (Strict Privacy)
+*.zip
+*.tar
+*.gz
+*.json.bak
+*.bak
+
+# Operating System Files
+.DS_Store
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# Editor and IDE configurations
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Python and Testing artifacts
+__pycache__/
+*.py[cod]
+*$py.class
+*.log
+test_*.png
+snap_*.png
+mockups_*.png
+continuity_*.png
+
+# Node / Build tools
+node_modules/
+dist/
+.env
+.env.local

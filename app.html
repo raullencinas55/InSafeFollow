@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#fcf9f2">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+
+  <div class="app-wrapper">
+    <!-- Navbar Superior -->
+    <header class="app-navbar">
+      <a href="index.html" class="nav-brand">
+        <div class="nav-brand-badge">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </svg>
+        </div>
+        <span>InSafeFollow</span>
+      </a>
+
+      <div class="nav-actions">
+        <div class="nav-desktop-actions">
+          <button id="openGuideBtn" class="nav-btn" title="Guía visual para descargar tus datos oficiales">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+              <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+            </svg>
+            <span class="nav-btn-text">Guía</span>
+          </button>
+          <button id="openLegalBtn" class="nav-btn" title="Marco legal, portabilidad y descargo de responsabilidad">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+            <span class="nav-btn-text">Legal</span>
+          </button>
+          <button id="openResetBtn" class="nav-btn" title="Restablecer datos locales">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+            <span class="nav-btn-text">Limpiar</span>
+          </button>
+        </div>
+
+        <button id="openAppDrawerBtn" class="hamburger-btn" aria-label="Abrir menú de opciones">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="app-main">
+
+      <!-- Zona de Carga Inicial (Dropzone) -->
+      <section id="dropzone" class="dropzone-container">
+        <input type="file" id="fileInput" class="file-input-hidden" accept=".zip">
+        <div class="dropzone-icon-wrap">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+        </div>
+        <h2 class="dropzone-title">
+          <span class="text-desktop">Carga tu exportación oficial de datos</span>
+          <span class="text-touch">Selecciona tu exportación oficial de datos</span>
+        </h2>
+        <p class="dropzone-desc">
+          <span class="text-desktop">Arrastra tu archivo <code>.zip</code> aquí o pulsa para seleccionarlo. Conforme al derecho de portabilidad (RGPD), el análisis ocurre 100% en tu dispositivo.</span>
+          <span class="text-touch">Toca para seleccionar tu archivo <code>.zip</code> descargado de Meta. Conforme al derecho de portabilidad (RGPD), el análisis ocurre 100% en tu dispositivo.</span>
+        </p>
+        <button type="button" class="btn btn-primary">
+          Seleccionar archivo .ZIP
+        </button>
+      </section>
+
+      <!-- Spinner de Procesamiento -->
+      <div id="loadingBox" class="loading-box">
+        <div class="skeleton-spinner"></div>
+        <div style="text-align: center;">
+          <p style="font-weight: 700; font-size: 0.95rem;">Procesando archivo local...</p>
+          <p class="text-muted" style="font-size: 0.8rem; margin-top: 4px;">Tus datos permanecen cifrados en tu navegador</p>
+        </div>
+      </div>
+
+      <!-- Dashboard de Datos -->
+      <div id="dashboardContent" style="display: none;">
+
+        <!-- Subvista 1: Resumen General / Métricas (Mobile Overview) -->
+        <div id="appOverviewView" class="app-subview">
+          <!-- Header del Perfil Activo -->
+          <section id="statusBanner" class="profile-header-card">
+            <div class="profile-meta-wrap">
+              <div class="profile-avatar-box" id="ownerAvatarWrap" title="Toca para seleccionar tu foto de perfil">
+                <img id="ownerAvatarImg" class="user-avatar-img" src="" alt="Avatar" style="display: none;">
+                <div id="ownerAvatarFallback">L</div>
+                <div class="avatar-edit-overlay">📷</div>
+                <input type="file" id="ownerPhotoInput" accept="image/*" style="display: none;">
+              </div>
+              <div class="profile-names">
+                <h2>
+                  <span id="ownerHandle">@usuario</span>
+                  <span class="badge badge-success status-badge" title="Estado: Activo">
+                    <span class="status-dot"></span>
+                    <span class="status-label">Activo</span>
+                  </span>
+                </h2>
+                <span id="lastUpdatedText" class="profile-date">Último análisis disponible</span>
+              </div>
+            </div>
+            <div class="profile-actions">
+              <button id="toggleChartBtn" class="btn btn-secondary" style="min-height: 38px; font-size: 0.82rem;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="20" x2="18" y2="10"></line>
+                  <line x1="12" y1="20" x2="12" y2="4"></line>
+                  <line x1="6" y1="20" x2="6" y2="14"></line>
+                </svg>
+                <span>Crecimiento</span>
+              </button>
+              <button id="newUploadBtn" class="btn btn-secondary" style="min-height: 38px; font-size: 0.82rem;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polyline points="23 4 23 10 17 10"></polyline>
+                  <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                </svg>
+                <span class="btn-text-desktop">Subir nuevo archivo</span>
+                <span class="btn-text-mobile">Subir archivo</span>
+              </button>
+            </div>
+
+            <!-- Panel Desplegable del Gráfico de Crecimiento -->
+            <div id="growthChartContainer" class="growth-chart-card" style="display: none;">
+              <div class="chart-header">
+                <div class="chart-title-box">
+                  <span class="chart-title">Evolución de Seguidores</span>
+                  <span id="chartSummaryBadge" class="badge badge-primary">0 seguidores</span>
+                </div>
+                <div class="chart-granularity-tabs">
+                  <button type="button" class="chart-tab-btn" data-granularity="day">
+                    <span class="tab-text-desktop">Semana</span>
+                    <span class="tab-text-mobile">Semana</span>
+                  </button>
+                  <button type="button" class="chart-tab-btn" data-granularity="month">Mes</button>
+                  <button type="button" class="chart-tab-btn active" data-granularity="year">Año</button>
+                  <button type="button" class="chart-tab-btn" data-granularity="all">
+                    <span class="tab-text-desktop">Todos los tiempos</span>
+                    <span class="tab-text-mobile">Histórico</span>
+                  </button>
+                </div>
+              </div>
+
+              <!-- Selector de Navegación de Período con Flechas [<] [>] -->
+              <div class="chart-period-nav" id="chartPeriodNav">
+                <button type="button" id="chartPrevBtn" class="chart-nav-arrow-btn" aria-label="Período anterior" title="Anterior">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                  </svg>
+                </button>
+                <div class="chart-period-info">
+                  <span id="chartPeriodLabel" class="chart-period-label">Año 2026</span>
+                  <span id="chartPeriodSub" class="chart-period-sub">12 meses</span>
+                </div>
+                <button type="button" id="chartNextBtn" class="chart-nav-arrow-btn" aria-label="Período siguiente" title="Siguiente">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                  </svg>
+                </button>
+              </div>
+
+              <!-- Gráfico SVG Interactivo -->
+              <div class="chart-svg-wrap" id="chartSvgWrap"></div>
+
+              <!-- Fichas Estadísticas de Resumen (bajo el gráfico) -->
+              <div class="chart-stats-row" id="chartStatsRow"></div>
+            </div>
+          </section>
+
+          <!-- Bento Grid de Métricas -->
+          <section class="bento-metrics-grid">
+            <div class="metric-widget" data-tab="notFollowingBack">
+              <div class="widget-top">
+                <span class="widget-label">No te siguen de vuelta</span>
+                <span class="badge badge-danger">Foco</span>
+              </div>
+              <div class="widget-value accent" data-count="notFollowingBack">0</div>
+              <div class="widget-subtext">Cuentas que sigues pero no te siguen</div>
+            </div>
+
+            <div class="metric-widget" data-tab="unfollowedYou">
+              <div class="widget-top">
+                <span class="widget-label">Te dejaron de seguir</span>
+                <span class="badge badge-neutral">Historial</span>
+              </div>
+              <div class="widget-value" data-count="unfollowedYou">0</div>
+              <div class="widget-subtext">Detectados respecto a la revisión anterior</div>
+            </div>
+
+            <div class="metric-widget" data-tab="newFollowers">
+              <div class="widget-top">
+                <span class="widget-label">Nuevos seguidores</span>
+                <span class="badge badge-success">Crecimiento</span>
+              </div>
+              <div class="widget-value success" data-count="newFollowers">0</div>
+              <div class="widget-subtext">Ganados respecto a la revisión anterior</div>
+            </div>
+
+            <div class="metric-widget" data-tab="mutual">
+              <div class="widget-top">
+                <span class="widget-label">Seguimiento mutuo</span>
+                <span class="badge badge-neutral">Comunidad</span>
+              </div>
+              <div class="widget-value" data-count="mutual">0</div>
+              <div class="widget-subtext">Se siguen de forma recíproca</div>
+            </div>
+
+            <div class="metric-widget" data-tab="fans">
+              <div class="widget-top">
+                <span class="widget-label">Fans</span>
+                <span class="badge badge-neutral">Audiencia</span>
+              </div>
+              <div class="widget-value" data-count="fans">0</div>
+              <div class="widget-subtext">Te siguen pero tú no los sigues</div>
+            </div>
+
+            <div class="metric-widget" data-tab="pendingRequests">
+              <div class="widget-top">
+                <span class="widget-label">Solicitudes pendientes</span>
+                <span class="badge badge-neutral">En espera</span>
+              </div>
+              <div class="widget-value" data-count="pendingRequests">0</div>
+              <div class="widget-subtext">Cuentas privadas que no han aceptado</div>
+            </div>
+
+            <div class="metric-widget" data-tab="hideStoryFrom">
+              <div class="widget-top">
+                <span class="widget-label">Historias ocultas</span>
+                <span class="badge badge-warning">Privacidad</span>
+              </div>
+              <div class="widget-value warning" data-count="hideStoryFrom">0</div>
+              <div class="widget-subtext">Perfiles con tus Stories bloqueadas</div>
+            </div>
+
+            <div class="metric-widget" data-tab="blockedProfiles">
+              <div class="widget-top">
+                <span class="widget-label">Cuentas bloqueadas</span>
+                <span class="badge badge-danger">Bloqueos</span>
+              </div>
+              <div class="widget-value accent" data-count="blockedProfiles">0</div>
+              <div class="widget-subtext">Perfiles bloqueados históricamente</div>
+            </div>
+
+            <div class="metric-widget" data-tab="receivedRequests">
+              <div class="widget-top">
+                <span class="widget-label">Solicitudes recibidas</span>
+                <span class="badge badge-neutral">En espera</span>
+              </div>
+              <div class="widget-value" data-count="receivedRequests">0</div>
+              <div class="widget-subtext">Peticiones recibidas para seguirte</div>
+            </div>
+
+            <div class="metric-widget" data-tab="recentlyUnfollowed">
+              <div class="widget-top">
+                <span class="widget-label">Dejados de seguir</span>
+                <span class="badge badge-neutral">Recientes</span>
+              </div>
+              <div class="widget-value" data-count="recentlyUnfollowed">0</div>
+              <div class="widget-subtext">Unfollows realizados desde Instagram</div>
+            </div>
+
+            <div class="metric-widget" data-tab="followingHashtags">
+              <div class="widget-top">
+                <span class="widget-label">Hashtags seguidos</span>
+                <span class="badge badge-neutral">Intereses</span>
+              </div>
+              <div class="widget-value" data-count="followingHashtags">0</div>
+              <div class="widget-subtext">Etiquetas seguidas en tu feed</div>
+            </div>
+
+            <div class="metric-widget" data-tab="closeFriends">
+              <div class="widget-top">
+                <span class="widget-label">Mejores amigos</span>
+                <span class="badge badge-success">Círculo</span>
+              </div>
+              <div class="widget-value success" data-count="closeFriends">0</div>
+              <div class="widget-subtext">En tu lista verde de Close Friends</div>
+            </div>
+          </section>
+
+          <!-- Hint de Navegación -->
+          <div class="overview-tap-hint">
+            <span class="text-desktop">💡 Haz clic en cualquier tarjeta de métrica para abrir su lista personalizada</span>
+            <span class="text-touch">💡 Toca cualquier tarjeta de métrica para abrir su lista personalizada</span>
+          </div>
+        </div>
+
+        <!-- Subvista 2: Detalle de Lista de Cuentas (Vista Personalizada) -->
+        <div id="appListView" class="app-subview subview-hidden">
+          
+          <!-- Navegación Segmentada de Pestañas (Visible en Desktop y Tablet, oculta en Mobile) -->
+          <div class="segmented-nav-wrap">
+            <div class="segmented-nav">
+              <button class="segment-btn active" data-tab="notFollowingBack">
+                <span>No te siguen</span>
+                <span class="badge badge-danger" data-count="notFollowingBack">0</span>
+              </button>
+              <button class="segment-btn" data-tab="unfollowedYou">
+                <span>Te dejaron de seguir</span>
+                <span class="badge badge-neutral" data-count="unfollowedYou">0</span>
+              </button>
+              <button class="segment-btn" data-tab="newFollowers">
+                <span>Nuevos seguidores</span>
+                <span class="badge badge-success" data-count="newFollowers">0</span>
+              </button>
+              <button class="segment-btn" data-tab="mutual">
+                <span>Seguimiento mutuo</span>
+                <span class="badge badge-neutral" data-count="mutual">0</span>
+              </button>
+              <button class="segment-btn" data-tab="fans">
+                <span>Fans</span>
+                <span class="badge badge-neutral" data-count="fans">0</span>
+              </button>
+              <button class="segment-btn" data-tab="pendingRequests">
+                <span>Solicitudes</span>
+                <span class="badge badge-neutral" data-count="pendingRequests">0</span>
+              </button>
+              <button class="segment-btn" data-tab="hideStoryFrom">
+                <span>Historias Ocultas</span>
+                <span class="badge badge-warning" data-count="hideStoryFrom">0</span>
+              </button>
+              <button class="segment-btn" data-tab="blockedProfiles">
+                <span>Bloqueados</span>
+                <span class="badge badge-danger" data-count="blockedProfiles">0</span>
+              </button>
+              <button class="segment-btn" data-tab="receivedRequests">
+                <span>Recibidas</span>
+                <span class="badge badge-neutral" data-count="receivedRequests">0</span>
+              </button>
+              <button class="segment-btn" data-tab="recentlyUnfollowed">
+                <span>Unfollows</span>
+                <span class="badge badge-neutral" data-count="recentlyUnfollowed">0</span>
+              </button>
+              <button class="segment-btn" data-tab="followingHashtags">
+                <span>Hashtags</span>
+                <span class="badge badge-neutral" data-count="followingHashtags">0</span>
+              </button>
+              <button class="segment-btn" data-tab="closeFriends">
+                <span>Mejores amigos</span>
+                <span class="badge badge-success" data-count="closeFriends">0</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Cabecera Unificada con Buscador Morphing -->
+          <header class="unified-list-header" id="unifiedListHeader">
+            <!-- Botón Volver Adaptativo (Icono en móvil, Icono + Texto en desktop/tablet) -->
+            <button id="backToOverviewBtn" class="unified-back-btn" aria-label="Volver">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+              </svg>
+              <span class="back-text">Volver</span>
+            </button>
+
+            <!-- Título y Badge de Categoría Activa -->
+            <div class="unified-title-wrap" id="unifiedTitleWrap">
+              <span id="activeCategoryTitle" class="unified-category-title">No te siguen</span>
+              <span id="activeCategoryBadge" class="badge badge-danger">0</span>
+            </div>
+
+            <!-- Caja de Búsqueda Morphing (se activa al pulsar la lupa) -->
+            <div class="morphing-search-container" id="morphingSearchContainer">
+              <svg class="search-field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input type="text" id="searchInput" class="morphing-search-input" placeholder="Buscar @usuario..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+              <button type="button" id="clearSearchBtn" class="clear-search-btn" aria-label="Limpiar búsqueda" style="display: none;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+
+            <!-- Botón Lupa (Alternador de Búsqueda) -->
+            <button type="button" id="toggleSearchBtn" class="unified-search-toggle-btn" aria-label="Abrir búsqueda">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </button>
+
+            <!-- Botón Cancelar Búsqueda (visible solo cuando morphing está activo) -->
+            <button type="button" id="closeSearchBtn" class="unified-close-search-btn" aria-label="Cerrar búsqueda" style="display: none;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </header>
+
+          <!-- Barra de Herramientas de Lista: Ordenación -->
+          <div class="list-toolbar" id="listToolbar">
+            <div class="filter-chips-wrap" id="filterChipsWrap">
+              <span class="sort-icon-indicator" title="Ordenar lista">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 6h18M6 12h12M10 18h4"/>
+                </svg>
+              </span>
+              <button type="button" class="filter-chip-btn active" data-sort="date-desc">Más recientes</button>
+              <button type="button" class="filter-chip-btn" data-sort="date-asc">Más antiguos</button>
+              <button type="button" class="filter-chip-btn" data-sort="alpha-asc">A → Z</button>
+              <button type="button" class="filter-chip-btn" data-sort="alpha-desc">Z → A</button>
+            </div>
+          </div>
+
+          <!-- Ventana de Usuarios con Scroll Infinito -->
+          <div class="user-list-window" id="userListWindow">
+            <div id="resultsContainer" class="user-list-view"></div>
+            <div id="scrollSentinel" class="scroll-sentinel"></div>
+            <!-- Estado Vacío -->
+            <div id="emptyState" class="empty-state-box" style="display: none;">
+              <h3 class="empty-state-title">No se encontraron cuentas</h3>
+              <p class="empty-state-desc">No hay usuarios en este segmento o ninguna cuenta coincide con tu búsqueda.</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Modal: Guía Paso a Paso con Capturas Reales de Meta -->
+  <div id="instructionsModal" class="modal-backdrop">
+    <div class="modal-card modal-card-sheet">
+      <div class="modal-card-header">
+        <div class="modal-header-text">
+          <h2 class="modal-card-title">Cómo descargar tu archivo de Meta</h2>
+          <p class="modal-card-subtitle">Guía oficial paso a paso para generar la descarga en menos de 3 minutos.</p>
+        </div>
+        <button id="closeGuideBtn" class="modal-close-btn" aria-label="Cerrar">✕</button>
+      </div>
+
+      <div class="modal-card-body">
+        <div class="guide-alert-box">
+          <strong>⚠️ PUNTO CLAVE ("Borrar todo"):</strong><br>
+          Meta selecciona todas las categorías por defecto. Para que el archivo pese menos de 1 MB y se genere de inmediato, pulsa <strong>"Borrar todo"</strong> y marca <strong>ÚNICAMENTE "Seguidores y seguidos"</strong>.
+        </div>
+
+        <div class="guide-step-card">
+          <div class="guide-step-num">1</div>
+          <div class="guide-step-body">
+            <h4>Centro de Cuentas: Exportar información</h4>
+            <p>Entra en el Centro de Cuentas oficial de Meta y ve a exportación de datos.</p>
+            <div class="guide-chips-wrap">
+              <span class="guide-chip">Tu información y permisos</span>
+              <span class="guide-chip">→</span>
+              <span class="guide-chip">Exportar tu información</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="guide-step-card">
+          <div class="guide-step-num">2</div>
+          <div class="guide-step-body">
+            <h4>Crear exportación</h4>
+            <p>Pulsa en el botón para solicitar una nueva descarga de datos.</p>
+            <div class="guide-chips-wrap">
+              <span class="guide-chip chip-blue">Crear exportación</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="guide-step-card">
+          <div class="guide-step-num">3</div>
+          <div class="guide-step-body">
+            <h4>Seleccionar tu perfil</h4>
+            <p>Marca la cuenta de Instagram que deseas auditar.</p>
+            <div class="guide-chips-wrap">
+              <span class="guide-chip">☑ Tu cuenta de Instagram</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="guide-step-card">
+          <div class="guide-step-num">4</div>
+          <div class="guide-step-body">
+            <h4>Destino de exportación</h4>
+            <p>Elige descargar el archivo en tu dispositivo o teléfono.</p>
+            <div class="guide-chips-wrap">
+              <span class="guide-chip">Exportar al dispositivo</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="guide-step-card">
+          <div class="guide-step-num">5</div>
+          <div class="guide-step-body">
+            <h4>Personalizar información</h4>
+            <p>En lugar de exportar todo el historial pesado, personaliza los datos.</p>
+            <div class="guide-chips-wrap">
+              <span class="guide-chip chip-blue">Personalizar información</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="guide-step-card guide-step-highlight-red">
+          <div class="guide-step-num step-num-red">6</div>
+          <div class="guide-step-body">
+            <h4 style="color: var(--accent-hover);">⚠️ Haz clic en "Borrar todo"</h4>
+            <p>Pulsa el enlace en la esquina superior derecha para desmarcar mensajes y fotos al instante.</p>
+            <div class="guide-chips-wrap">
+              <span class="guide-chip chip-red">⚠️ Borrar todo</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="guide-step-card guide-step-highlight-green">
+          <div class="guide-step-num step-num-green">7</div>
+          <div class="guide-step-body">
+            <h4 style="color: var(--color-success);">Marca SOLO "Seguidores y seguidos"</h4>
+            <p>En la sección <strong>Conexiones</strong> marca únicamente esta opción para que tarde solo 3 minutos.</p>
+            <div class="guide-chips-wrap">
+              <span class="guide-chip chip-green">☑ Seguidores y seguidos</span>
+              <span class="guide-chip">Guardar</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="guide-step-card">
+          <div class="guide-step-num">8</div>
+          <div class="guide-step-body">
+            <h4>Formato JSON y Confirmación</h4>
+            <p>Configura los parámetros finales de descarga exactamente así:</p>
+            <div class="guide-chips-wrap">
+              <span class="guide-chip chip-blue">Formato: JSON</span>
+              <span class="guide-chip">Intervalo: Desde el principio</span>
+              <span class="guide-chip">Calidad: Más baja</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-card-footer">
+        <a href="https://accountscenter.instagram.com/info_and_permissions/dyi/" target="_blank" rel="noopener noreferrer" class="btn btn-primary modal-action-full">
+          Abrir Centro de Cuentas de Meta ↗
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Confirmación para Limpiar Datos -->
+  <div id="resetModal" class="modal-backdrop modal-backdrop-center">
+    <div class="modal-card modal-card-dialog">
+      <div class="modal-dialog-header">
+        <div class="modal-dialog-icon">⚠️</div>
+        <div>
+          <h3 class="modal-dialog-title">¿Restablecer datos locales?</h3>
+          <p class="modal-dialog-desc">
+            Se eliminarán los análisis anteriores y las fotos de perfil almacenadas en la memoria de este navegador.
+          </p>
+        </div>
+        <button id="closeResetBtn" class="modal-close-btn" aria-label="Cerrar">✕</button>
+      </div>
+      <div class="modal-dialog-actions">
+        <button id="cancelResetBtn" class="btn btn-secondary">Cancelar</button>
+        <button id="confirmResetBtn" class="btn btn-outline-danger">Restablecer</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Marco Legal, Portabilidad y Descargo de Marcas -->
+  <div id="legalModal" class="modal-backdrop">
+    <div class="modal-card modal-card-sheet">
+      <div class="modal-card-header">
+        <div class="modal-header-text">
+          <h2 class="modal-card-title">Marco Legal y Privacidad</h2>
+          <p class="modal-card-subtitle">Transparencia y legalidad de la arquitectura de InSafeFollow.</p>
+        </div>
+        <button id="closeLegalBtn" class="modal-close-btn" aria-label="Cerrar">✕</button>
+      </div>
+
+      <div class="modal-card-body">
+        <div class="legal-article-card">
+          <h4 class="legal-article-title">1. Derecho a la Portabilidad de Datos (RGPD / CCPA)</h4>
+          <p class="legal-article-p">
+            Conforme al <strong>Artículo 20 del RGPD</strong> europeo y normativas internacionales de privacidad, todo usuario tiene derecho legal inalienable a recibir y portar sus datos en un formato legible (JSON/ZIP). InSafeFollow asiste al usuario en la interpretación local de los datos suministrados por la propia plataforma.
+          </p>
+        </div>
+
+        <div class="legal-article-card">
+          <h4 class="legal-article-title">2. Cero Vulneración Tecnológica ni Scraping</h4>
+          <p class="legal-article-p">
+            InSafeFollow <strong>no realiza web scraping</strong>, no evade medidas tecnológicas de seguridad, no utiliza APIs privadas no autorizadas, no solicita contraseñas y no transmite información a servidores de terceros. Todo el cómputo se realiza estrictamente en la memoria RAM del navegador (100% Client-Side).
+          </p>
+        </div>
+
+        <div class="legal-article-card">
+          <h4 class="legal-article-title">3. Descargo de Marcas Comerciales</h4>
+          <p class="legal-article-p">
+            InSafeFollow es una herramienta independiente y de código abierto, no afiliada ni respaldada por Meta Platforms, Inc. Las marcas comerciales <em>"Instagram"</em> y <em>"Meta"</em> son propiedad de Meta Platforms, Inc. Su mención es meramente descriptiva bajo la doctrina legal de <strong>Uso Legítimo Nominativo (Nominative Fair Use)</strong>.
+          </p>
+        </div>
+
+        <div class="legal-article-card">
+          <h4 class="legal-article-title">4. Cero Almacenamiento Remoto de Datos</h4>
+          <p class="legal-article-p">
+            InSafeFollow no posee bases de datos externas ni servidores que reciban información personal. Los registros quedan guardados de manera exclusiva en el <code>localStorage</code> del dispositivo del usuario, bajo su control total y eliminables en cualquier instante.
+          </p>
+        </div>
+      </div>
+
+      <div class="modal-card-footer">
+        <button onclick="document.getElementById('legalModal').classList.remove('active')" class="btn btn-primary modal-action-full">
+          Entendido
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Drawer Móvil para app.html -->
+  <div id="appMobileDrawer" class="drawer-backdrop" aria-hidden="true">
+    <div class="drawer-panel" role="dialog" aria-label="Menú del panel">
+      <div class="drawer-header">
+        <div class="drawer-brand">
+          <div class="nav-brand-badge" style="width: 28px; height: 28px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+          </div>
+          <span>InSafeFollow</span>
+        </div>
+        <button id="closeAppDrawerBtn" class="drawer-close-btn" aria-label="Cerrar menú">✕</button>
+      </div>
+
+      <nav class="drawer-nav">
+        <a href="index.html" class="drawer-link">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+          <span>Ir a la Portada</span>
+        </a>
+        <button id="drawerGuideBtn" class="drawer-link" style="text-align: left; width: 100%;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+          </svg>
+          <span>Guía de descarga Meta</span>
+        </button>
+        <button id="drawerLegalBtn" class="drawer-link" style="text-align: left; width: 100%;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="16" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+          </svg>
+          <span>Marco Legal y RGPD</span>
+        </button>
+        <button id="drawerUploadBtn" class="drawer-link primary" style="text-align: left; width: 100%;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+          <span>Subir nuevo .ZIP</span>
+        </button>
+        <button id="drawerResetBtn" class="drawer-link danger" style="text-align: left; width: 100%;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"></polyline>
+            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+          </svg>
+          <span>Limpiar datos locales</span>
+        </button>
+      </nav>
+
+      <div class="drawer-footer">
+        100% en tu navegador • Cero contraseñas
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/vendor/fflate.js"></script>
+  <script src="js/parser.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

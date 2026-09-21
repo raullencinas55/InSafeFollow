@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InSafeFollow • Descubre quién no te sigue en Instagram sin contraseñas</title>
+  <meta name="description" content="Descubre quién no te sigue de vuelta y quién te dejó de seguir en Instagram sin contraseñas, sin bots y sin riesgo de baneo. Análisis 100% privado en tu navegador conforme al RGPD.">
+  <meta name="keywords" content="quien no me sigue en instagram, unfollowers instagram seguro, ver quien me dejo de seguir instagram sin contraseña, analizador seguidores instagram privado, seguidores y seguidos instagram json">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="InSafeFollow">
+
+  <!-- Open Graph / Redes Sociales -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="InSafeFollow • Descubre quién no te sigue en Instagram sin riesgo de baneo">
+  <meta property="og:description" content="Auditoría 100% local y segura. Analiza tu archivo oficial de Instagram sin contraseñas y sin riesgo de bloqueo.">
+  <meta property="og:site_name" content="InSafeFollow">
+  <meta property="og:locale" content="es_ES">
+
+  <!-- Twitter Cards -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="InSafeFollow • Descubre quién no te sigue en Instagram">
+  <meta name="twitter:description" content="Auditoría privada y local de seguidores en Instagram. Cero contraseñas, 100% seguro en tu navegador.">
+
+  <!-- Schema.org Datos Estructurados (Google Rich Snippets) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "@id": "#webapp",
+        "name": "InSafeFollow",
+        "description": "Herramienta web privada y gratuita para auditar seguidores y detectar unfollowers en Instagram mediante exportaciones oficiales sin contraseñas.",
+        "applicationCategory": "UtilityApplication",
+        "operatingSystem": "All",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "#faq",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "¿Por qué InSafeFollow nunca te pide tu contraseña?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "InSafeFollow utiliza la exportación oficial de datos que Meta entrega por ley a cada usuario (RGPD Art. 20). Al procesar el archivo .ZIP directamente en tu navegador, no necesita conectarse a tu cuenta ni acceder a tus credenciales."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Por qué las aplicaciones habituales provocan baneos en Instagram?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Las aplicaciones tradicionales inician sesión en emuladores o servidores no autorizados y realizan peticiones masivas (scraping), lo cual activa de inmediato los sistemas automatizados de detección de fraude y bloqueo de Meta."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Cómo hacer para que la descarga de datos tarde solo 3 minutos?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "En el Centro de Cuentas de Meta, en 'Personalizar información', haz clic en 'Borrar todo' y marca únicamente 'Seguidores y seguidos' en formato JSON con calidad más baja. Esto genera un archivo ligero de menos de 1 MB en pocos minutos."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Mis datos personales o fotos se envían a algún servidor?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. Todo el análisis ocurre estrictamente en la memoria RAM de tu propio dispositivo. Puedes incluso desconectar tu conexión a internet antes de subir el archivo y funcionará con total normalidad."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+ 
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/landing.css">
+</head>
+<body>
+
+  <!-- Barra de Navegación -->
+  <header class="landing-navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-brand">
+        <div class="nav-brand-badge">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </svg>
+        </div>
+        <span>InSafeFollow</span>
+      </a>
+
+      <nav class="nav-links">
+        <a href="#hero-view" class="nav-link active">Inicio</a>
+        <a href="#demo-preview" class="nav-link" style="display: none;">
+          <span class="nav-label-full">Demostración</span>
+          <span class="nav-label-short">Demo</span>
+        </a>
+        <a href="#comparativa" class="nav-link">
+          <span class="nav-label-full">¿Por qué es seguro?</span>
+          <span class="nav-label-short">Seguridad</span>
+        </a>
+        <a href="#como-funciona" class="nav-link">Paso a paso</a>
+        <a href="#ventajas" class="nav-link">
+          <span class="nav-label-full">Características</span>
+          <span class="nav-label-short">Ventajas</span>
+        </a>
+        <a href="#faq" class="nav-link">
+          <span class="nav-label-full">Preguntas frecuentes</span>
+          <span class="nav-label-short">FAQ</span>
+        </a>
+        <a href="#legal" class="nav-link">
+          <span class="nav-label-full">Marco Legal</span>
+          <span class="nav-label-short">Legal</span>
+        </a>
+      </nav>
+
+      <div class="nav-actions">
+        <a href="app.html" class="btn btn-primary nav-app-btn" title="Ir a la aplicación InSafeFollow">
+          <span>Abrir App</span>
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="7" y1="17" x2="17" y2="7"></line>
+            <polyline points="7 7 17 7 17 17"></polyline>
+          </svg>
+        </a>
+
+        <button id="openDrawerBtn" class="hamburger-btn" aria-label="Abrir menú de navegación">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- Hero Section -->
+    <section class="hero-section web-section active-view" id="hero-view">
+      <div class="hero-container">
+
+        <!-- Stickers Neobrutalistas Táctiles y Responsivos -->
+        <div class="hero-stickers-wrap">
+          <span class="nb-sticker sunset">★ Cero Contraseñas</span>
+          <span class="nb-sticker yellow">🔒 Sin Riesgo de Baneo</span>
+          <span class="nb-sticker mint">⚡ 100% en tu Navegador</span>
+        </div>
+
+        <!-- Titular Claro y Tipográficamente Armónico -->
+        <h1 class="hero-title">
+          Saber quién no te sigue en Instagram <br class="hero-br">
+          sin arriesgar <span class="brand-safe">tu cuenta</span>.
+        </h1>
+
+        <p class="hero-subtitle">
+          Las apps tradicionales te piden contraseñas y provocan suspensiones de Meta. InSafeFollow analiza tu exportación oficial de seguidores directamente en la memoria RAM de tu dispositivo: 100% privado, gratis y en un segundo.
+        </p>
+
+        <!-- Dropzone Protagonista -->
+        <div class="landing-dropzone" id="landingDropzone">
+          <input type="file" id="landingFileInput" accept=".zip">
+          <div class="dropzone-inner">
+            <div class="dropzone-icon">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="17 8 12 3 7 8"></polyline>
+                <line x1="12" y1="3" x2="12" y2="15"></line>
+              </svg>
+            </div>
+            <div class="dropzone-title">
+              <span class="text-desktop">Arrastra tu archivo .zip oficial aquí</span>
+              <span class="text-touch">Selecciona tu archivo .zip oficial aquí</span>
+            </div>
+            <div class="dropzone-hint">
+              <span class="text-desktop">o haz clic para buscarlo en tu dispositivo</span>
+              <span class="text-touch">Toca para buscarlo en tus archivos descargados</span>
+            </div>
+            <div style="margin-top: 10px;">
+              <span class="btn btn-primary" style="pointer-events: none; padding: 7px 18px; font-size: 0.88rem;">Seleccionar archivo .ZIP</span>
+            </div>
+          </div>
+          <div class="landing-drop-loading" id="landingDropLoading">
+            <div class="landing-loading-spinner"></div>
+            <span>Analizando datos en tu memoria RAM...</span>
+          </div>
+        </div>
+
+        <!-- Acciones Secundarias Limpias -->
+        <div class="hero-actions-row">
+          <a href="#como-funciona" class="hero-guide-link">
+            <span>Aprende a pedir tus datos en 3 min ↓</span>
+          </a>
+        </div>
+
+        <!-- Píldoras de Confianza Limpias -->
+        <div class="hero-proof-pills">
+          <span class="proof-pill">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            Sin contraseñas ni bots
+          </span>
+          <span class="proof-pill">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            100% en tu navegador (RAM)
+          </span>
+          <span class="proof-pill">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            Inmune a bloqueos de Meta
+          </span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Sección de Simulación Interactiva (Oculta temporalmente a petición) -->
+    <section class="section section-sandbox web-section" id="demo-preview" style="display: none;">
+      <div class="section-container">
+        <div class="section-header">
+          <span class="section-tag">SIMULACIÓN EN VIVO</span>
+          <h2 class="section-title">Así de claro verás tus resultados</h2>
+          <p class="section-subtitle">
+            Prueba cómo funciona el panel con datos de demostración interactivos antes de cargar tu archivo.
+          </p>
+        </div>
+
+        <div class="sandbox-center-wrap">
+          <div class="preview-browser-card">
+            
+            <!-- Ventana Header -->
+            <div class="browser-header">
+              <div class="window-controls">
+                <span class="control-dot dot-red"></span>
+                <span class="control-dot dot-yellow"></span>
+                <span class="control-dot dot-green"></span>
+              </div>
+              <div class="browser-address">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                <span>insafefollow.app • Demostración</span>
+              </div>
+              <div style="width: 32px;"></div>
+            </div>
+
+            <!-- Interfaz Simulada Modular 1:1 con la App (Overview Dashboard <-> Lista Personalizada) -->
+            <div class="browser-body">
+
+              <!-- Subvista 1: Dashboard Overview (Demostración) -->
+              <div id="demoOverviewView" class="demo-subview">
+                <!-- Perfil de demostración -->
+                <div class="mockup-profile-bar">
+                  <div class="mockup-profile-info">
+                    <div class="story-avatar-ring">
+                      <div class="story-avatar-inner">D</div>
+                    </div>
+                    <div>
+                      <div class="mockup-user-name">
+                        <span>@cuenta_demo</span>
+                        <span class="badge badge-success">Análisis Activo</span>
+                      </div>
+                      <div class="mockup-user-meta">Última sincronización • Procesado 100% local en RAM</div>
+                    </div>
+                  </div>
+                  <div class="mockup-profile-status">
+                    <span class="badge badge-warning" style="font-size: 0.78rem; padding: 4px 10px;">★ Simulación interactiva</span>
+                  </div>
+                </div>
+
+                <!-- Bento Grid de Métricas de Demostración (6 tarjetas con diseño uniforme idéntico a la app) -->
+                <div class="demo-bento-grid">
+                  <div class="demo-metric-card" data-demo-tab="notFollowingBack">
+                    <div class="metric-top">
+                      <span class="metric-label">No te siguen de vuelta</span>
+                      <span class="badge badge-danger">Foco</span>
+                    </div>
+                    <div class="metric-value accent" data-count="notFollowingBack">14</div>
+                    <div class="metric-subtext">Cuentas que sigues pero no te siguen</div>
+                  </div>
+
+                  <div class="demo-metric-card" data-demo-tab="unfollowedYou">
+                    <div class="metric-top">
+                      <span class="metric-label">Te dejaron de seguir</span>
+                      <span class="badge badge-neutral">Historial</span>
+                    </div>
+                    <div class="metric-value" data-count="unfollowedYou">3</div>
+                    <div class="metric-subtext">Detectados respecto al análisis anterior</div>
+                  </div>
+
+                  <div class="demo-metric-card" data-demo-tab="newFollowers">
+                    <div class="metric-top">
+                      <span class="metric-label">Nuevos seguidores</span>
+                      <span class="badge badge-success">Crecimiento</span>
+                    </div>
+                    <div class="metric-value success" data-count="newFollowers">8</div>
+                    <div class="metric-subtext">Ganados respecto al análisis anterior</div>
+                  </div>
+
+                  <div class="demo-metric-card" data-demo-tab="mutual">
+                    <div class="metric-top">
+                      <span class="metric-label">Seguimiento mutuo</span>
+                      <span class="badge badge-neutral">Comunidad</span>
+                    </div>
+                    <div class="metric-value" data-count="mutual">1,280</div>
+                    <div class="metric-subtext">Se siguen de forma recíproca</div>
+                  </div>
+
+                  <div class="demo-metric-card" data-demo-tab="fans">
+                    <div class="metric-top">
+                      <span class="metric-label">Fans</span>
+                      <span class="badge badge-neutral">Audiencia</span>
+                    </div>
+                    <div class="metric-value" data-count="fans">42</div>
+                    <div class="metric-subtext">Te siguen pero tú no los sigues</div>
+                  </div>
+
+                  <div class="demo-metric-card" data-demo-tab="pendingRequests">
+                    <div class="metric-top">
+                      <span class="metric-label">Solicitudes pendientes</span>
+                      <span class="badge badge-neutral">En espera</span>
+                    </div>
+                    <div class="metric-value" data-count="pendingRequests">5</div>
+                    <div class="metric-subtext">Cuentas que aún no han aceptado</div>
+                  </div>
+                </div>
+
+                <!-- Hint de Navegación idéntico al de app.html -->
+                <div class="overview-tap-hint">
+                  <span class="text-desktop">💡 Haz clic en cualquier tarjeta de métrica para abrir su lista personalizada</span>
+                  <span class="text-touch">💡 Toca cualquier tarjeta de métrica para abrir su lista personalizada</span>
+                </div>
+              </div>
+
+              <!-- Subvista 2: Detalle de Lista de Cuentas (Demostración) -->
+              <div id="demoListView" class="demo-subview demo-subview-hidden">
+                <!-- Navegación Segmentada de Pestañas (Visible en Desktop y Tablet, oculta en Mobile) -->
+                <div class="segmented-nav-wrap">
+                  <div class="mockup-tabs">
+                    <button type="button" class="mockup-tab active" data-demo-tab="notFollowingBack">
+                      No te siguen <small>14</small>
+                    </button>
+                    <button type="button" class="mockup-tab" data-demo-tab="unfollowedYou">
+                      Te dejaron <small>3</small>
+                    </button>
+                    <button type="button" class="mockup-tab" data-demo-tab="newFollowers">
+                      Nuevos <small>8</small>
+                    </button>
+                    <button type="button" class="mockup-tab" data-demo-tab="mutual">
+                      Mutuos <small>1.2k</small>
+                    </button>
+                    <button type="button" class="mockup-tab" data-demo-tab="fans">
+                      Fans <small>42</small>
+                    </button>
+                    <button type="button" class="mockup-tab" data-demo-tab="pendingRequests">
+                      Solicitudes <small>5</small>
+                    </button>
+                  </div>
+                </div>
+
+                <!-- Cabecera Unificada con Búsqueda Morfomórfica -->
+                <header class="unified-list-header" id="demoUnifiedHeader">
+                  <div class="unified-header-left">
+                    <button type="button" id="demoBackBtn" class="btn btn-secondary unified-back-btn" aria-label="Volver">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                      </svg>
+                      <span class="back-text">Volver</span>
+                    </button>
+                    <div class="unified-title-wrap" id="demoTitleWrap">
+                      <span id="demoActiveTitle" class="demo-active-title">No te siguen</span>
+                      <span id="demoActiveBadge" class="badge badge-danger">14</span>
+                    </div>
+                  </div>
+
+                  <!-- Contenedor del Buscador Morfomórfico -->
+                  <div class="morphing-search-container" id="demoMorphingSearchContainer">
+                    <input type="text" id="demoSearchInput" class="morphing-search-input" placeholder="Buscar por @usuario..." autocomplete="off" spellcheck="false">
+                    <button type="button" id="demoClearSearchBtn" class="search-clear-btn" aria-label="Limpiar búsqueda" style="display: none;">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                      </svg>
+                    </button>
+                    <button type="button" id="demoCloseSearchBtn" class="search-close-btn" aria-label="Cerrar búsqueda">
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                      </svg>
+                    </button>
+                  </div>
+
+                  <!-- Botón de apertura de búsqueda -->
+                  <button type="button" id="demoToggleSearchBtn" class="unified-search-toggle-btn" aria-label="Buscar usuarios">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="11" cy="11" r="8"></circle>
+                      <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                  </button>
+                </header>
+
+                <!-- Lista dinámica simulada -->
+                <div class="mockup-list" id="demoList">
+                  <div class="mockup-row">
+                    <div class="mockup-row-user">
+                      <div class="mockup-initial"><span>M</span></div>
+                      <div>
+                        <div class="mockup-handle">@marcos_growth</div>
+                        <div class="mockup-sub">Siguiendo desde hace 6 meses</div>
+                      </div>
+                    </div>
+                    <div class="mockup-row-actions">
+                      <button type="button" class="mockup-btn-action" title="Ignorar (archivar cuenta)" aria-label="Ignorar">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="21 8 21 21 3 21 3 8"></polyline>
+                          <rect x="1" y="3" width="22" height="5"></rect>
+                          <line x1="10" y1="12" x2="14" y2="12"></line>
+                        </svg>
+                        <span>Ignorar</span>
+                      </button>
+                      <a href="https://www.instagram.com/marcos_growth/" target="_blank" rel="noopener noreferrer" class="mockup-btn-primary" title="Ver perfil en Instagram" aria-label="Ver perfil">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                          <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                        <span>Ver perfil</span>
+                      </a>
+                    </div>
+                  </div>
+                  <div class="mockup-row">
+                    <div class="mockup-row-user">
+                      <div class="mockup-initial"><span>E</span></div>
+                      <div>
+                        <div class="mockup-handle">@estudio_grafico_ba</div>
+                        <div class="mockup-sub">Siguiendo desde hace 1 año</div>
+                      </div>
+                    </div>
+                    <div class="mockup-row-actions">
+                      <button type="button" class="mockup-btn-action" title="Ignorar (archivar cuenta)" aria-label="Ignorar">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="21 8 21 21 3 21 3 8"></polyline>
+                          <rect x="1" y="3" width="22" height="5"></rect>
+                          <line x1="10" y1="12" x2="14" y2="12"></line>
+                        </svg>
+                        <span>Ignorar</span>
+                      </button>
+                      <a href="https://www.instagram.com/estudio_grafico_ba/" target="_blank" rel="noopener noreferrer" class="mockup-btn-primary" title="Ver perfil en Instagram" aria-label="Ver perfil">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                          <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                        <span>Ver perfil</span>
+                      </a>
+                    </div>
+                  </div>
+                  <div class="mockup-row">
+                    <div class="mockup-row-user">
+                      <div class="mockup-initial"><span>V</span></div>
+                      <div>
+                        <div class="mockup-handle">@viajes_fotografia</div>
+                        <div class="mockup-sub">Siguiendo desde hace 8 meses</div>
+                      </div>
+                    </div>
+                    <div class="mockup-row-actions">
+                      <button type="button" class="mockup-btn-action" title="Ignorar (archivar cuenta)" aria-label="Ignorar">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="21 8 21 21 3 21 3 8"></polyline>
+                          <rect x="1" y="3" width="22" height="5"></rect>
+                          <line x1="10" y1="12" x2="14" y2="12"></line>
+                        </svg>
+                        <span>Ignorar</span>
+                      </button>
+                      <a href="https://www.instagram.com/viajes_fotografia/" target="_blank" rel="noopener noreferrer" class="mockup-btn-primary" title="Ver perfil en Instagram" aria-label="Ver perfil">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                          <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                        <span>Ver perfil</span>
+                      </a>
+                    </div>
+                  </div>
+                  <div class="mockup-row">
+                    <div class="mockup-row-user">
+                      <div class="mockup-initial"><span>S</span></div>
+                      <div>
+                        <div class="mockup-handle">@sofia_tech_latam</div>
+                        <div class="mockup-sub">Siguiendo desde hace 3 meses</div>
+                      </div>
+                    </div>
+                    <div class="mockup-row-actions">
+                      <button type="button" class="mockup-btn-action" title="Ignorar (archivar cuenta)" aria-label="Ignorar">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                          <polyline points="21 8 21 21 3 21 3 8"></polyline>
+                          <rect x="1" y="3" width="22" height="5"></rect>
+                          <line x1="10" y1="12" x2="14" y2="12"></line>
+                        </svg>
+                        <span>Ignorar</span>
+                      </button>
+                      <a href="https://www.instagram.com/sofia_tech_latam/" target="_blank" rel="noopener noreferrer" class="mockup-btn-primary" title="Ver perfil en Instagram" aria-label="Ver perfil">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                          <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                        <span>Ver perfil</span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="sandbox-micro-note">
+                  💡 Haz clic en "Volver" para regresar al panel principal de métricas o explora las pestañas superiores.
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Comparativa de Seguridad -->
+    <section class="section section-comparativa web-section" id="comparativa">
+      <div class="section-container">
+        
+        <div class="section-header reveal">
+          <div class="section-tag">Análisis de Riesgo</div>
+          <h2 class="section-title">¿Por qué las demás aplicaciones provocan baneos?</h2>
+          <p class="section-subtitle">
+            Las redes sociales cuentan con sistemas automatizados que detectan inicios de sesión de terceros y patrones de scraping no autorizados.
+          </p>
+        </div>
+
+        <div class="comparison-grid reveal">
+          
+          <!-- Lado Peligroso -->
+          <div class="comp-card card-danger">
+            <div class="comp-badge-header">
+              <div class="comp-icon-danger">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="15" y1="9" x2="9" y2="15"></line>
+                  <line x1="9" y1="9" x2="15" y2="15"></line>
+                </svg>
+              </div>
+              <div>
+                <h3 class="comp-title">Apps habituales de Play Store y App Store</h3>
+                <span class="comp-status status-danger">Alto riesgo de suspensión</span>
+              </div>
+            </div>
+
+            <ul class="comp-bullet-list">
+              <li>
+                <div class="bullet-cross">✕</div>
+                <div>
+                  <strong>Exigen tu usuario y contraseña:</strong>
+                  <span>Tus credenciales viajan a servidores remotos o se extraen tokens de sesión de navegadores integrados.</span>
+                </div>
+              </li>
+              <li>
+                <div class="bullet-cross">✕</div>
+                <div>
+                  <strong>Ejecutan emuladores en la nube:</strong>
+                  <span>Inician sesión desde IPs desconocidas (AWS, DigitalOcean), activando de inmediato los cortafuegos de la plataforma.</span>
+                </div>
+              </li>
+              <li>
+                <div class="bullet-cross">✕</div>
+                <div>
+                  <strong>Scraping agresivo no oficial:</strong>
+                  <span>Hacen miles de peticiones automáticas simulando ser tu teléfono hasta que los sistemas de seguridad bloquean tu cuenta.</span>
+                </div>
+              </li>
+              <li>
+                <div class="bullet-cross">✕</div>
+                <div>
+                  <strong>Suscripciones semanales abusivas:</strong>
+                  <span>Cobran cuotas recurrentes por datos que tú mismo tienes derecho a solicitar gratis por ley.</span>
+                </div>
+              </li>
+            </ul>
+
+            <div class="comp-card-footer footer-danger">
+              ⚠️ Riesgo crítico de baneo permanente y robo de identidad
+            </div>
+          </div>
+
+          <!-- Lado Seguro InSafeFollow -->
+          <div class="comp-card card-safe">
+            <div class="comp-badge-header">
+              <div class="comp-icon-safe">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+              </div>
+              <div>
+                <h3 class="comp-title">Arquitectura Local InSafeFollow</h3>
+                <span class="comp-status status-safe">100% Inmune a sanciones</span>
+              </div>
+            </div>
+
+            <ul class="comp-bullet-list">
+              <li>
+                <div class="bullet-check">✓</div>
+                <div>
+                  <strong>Cero contraseñas requeridas:</strong>
+                  <span>Nunca se te solicitarán datos de acceso ni claves. No hay credenciales que puedan filtrarse.</span>
+                </div>
+              </li>
+              <li>
+                <div class="bullet-check">✓</div>
+                <div>
+                  <strong>Exportación oficial por normativa GDPR:</strong>
+                  <span>Utilizas el archivo legítimo que el Centro de Cuentas de la plataforma te genera por derecho legal.</span>
+                </div>
+              </li>
+              <li>
+                <div class="bullet-check">✓</div>
+                <div>
+                  <strong>Procesamiento en memoria de tu navegador:</strong>
+                  <span>El archivo .ZIP se descomprime y analiza directamente en tu CPU. Ningún dato se envía a internet.</span>
+                </div>
+              </li>
+              <li>
+                <div class="bullet-check">✓</div>
+                <div>
+                  <strong>Detección de pérdidas entre revisiones:</strong>
+                  <span>Calcula automáticamente quién te ha dejado de seguir comparando tus archivos de diferentes fechas.</span>
+                </div>
+              </li>
+            </ul>
+
+            <div class="comp-card-footer footer-safe">
+              🛡️ Cero peticiones a Meta • Procesado 100% privado en tu RAM
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Cómo Funciona (El secreto de los 3 minutos con "Borrar todo") -->
+    <section class="section web-section" id="como-funciona">
+      <div class="section-container">
+        
+        <div class="section-header reveal">
+          <div class="section-tag">Flujo Oficial de Exportación</div>
+          <h2 class="section-title">El truco para obtener tu descarga en 3 minutos</h2>
+          <p class="section-subtitle">
+            El sistema intenta descargar todo tu historial (gigabytes de fotos y chats). Siguiendo este ajuste obtendrás un archivo ligero de 1 MB al instante.
+          </p>
+        </div>
+
+        <div class="steps-matrix reveal">
+          
+          <div class="step-box">
+            <div class="step-header-row">
+              <div class="step-num-badge">01</div>
+              <h4>Abre el Centro de Cuentas oficial</h4>
+            </div>
+            <p>
+              Entra en el Centro de Cuentas oficial de Meta, ve a <strong>Tu información y permisos</strong> y selecciona <strong>Exportar tu información</strong>.
+            </p>
+          </div>
+
+          <div class="step-box step-highlight">
+            <div class="step-header-row">
+              <div class="step-num-badge highlight-num">02</div>
+              <h4>
+                <span>Haz clic en "Borrar todo"</span>
+                <span class="badge badge-danger">Punto clave</span>
+              </h4>
+            </div>
+            <p>
+              En "Personalizar información", pulsa el enlace <strong>Borrar todo</strong> para desmarcar todo el contenido multimedia. Luego marca <strong>únicamente "Seguidores y seguidos"</strong> en Conexiones con formato <strong>JSON</strong>.
+            </p>
+          </div>
+
+          <div class="step-box">
+            <div class="step-header-row">
+              <div class="step-num-badge">03</div>
+              <h4>Sube el .ZIP en InSafeFollow</h4>
+            </div>
+            <p>
+              Meta tardará entre 2 y 5 minutos en generar la descarga. Luego, solo selecciona tu archivo <code>.zip</code> descargado y obtendrás el análisis al instante.
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Características y Ventajas Técnicas -->
+    <section class="section web-section" id="ventajas">
+      <div class="section-container">
+        
+        <div class="section-header reveal">
+          <div class="section-tag">Ingeniería Web</div>
+          <h2 class="section-title">Diseñado con estándares de privacidad modernos</h2>
+          <p class="section-subtitle">
+            Sin servidores intermediarios, sin rastreadores y sin modelos de suscripción engañosos.
+          </p>
+        </div>
+
+        <div class="features-matrix reveal">
+          
+          <div class="feature-item">
+            <div class="card-title-row">
+              <div class="feature-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                  <line x1="8" y1="21" x2="16" y2="21"></line>
+                  <line x1="12" y1="17" x2="12" y2="21"></line>
+                </svg>
+              </div>
+              <h3>Funciona Offline</h3>
+            </div>
+            <p>Puedes desconectar tu conexión a internet antes de arrastrar tu archivo. Todo el procesamiento ocurre en el navegador mediante Web APIs estándar.</p>
+          </div>
+
+          <div class="feature-item">
+            <div class="card-title-row">
+              <div class="feature-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+              </div>
+              <h3>Historial de Bajas (Snapshots)</h3>
+            </div>
+            <p>Guarda una foto de tu estado actual. Cuando vuelvas a subir un archivo semanas más tarde, la aplicación te dirá con exactitud quién dejó de seguirte.</p>
+          </div>
+
+          <div class="feature-item">
+            <div class="card-title-row">
+              <div class="feature-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                </svg>
+              </div>
+              <h3>Lista de Excepciones</h3>
+            </div>
+            <p>¿Sigues a celebridades, proyectos o amigos que sabes que no te siguen? Márcalos con "Ignorar" para limpiar tu panel y mantener solo lo importante.</p>
+          </div>
+
+          <div class="feature-item">
+            <div class="card-title-row">
+              <div class="feature-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                  <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                </svg>
+              </div>
+              <h3>Diseño Táctil Móvil</h3>
+            </div>
+            <p>Botones de 44px, barra de filtros segmentada accesible para el pulgar y navegación fluida pensada para su uso en smartphones.</p>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Sección de Preguntas Frecuentes (FAQ) -->
+    <section class="section web-section" id="faq">
+      <div class="section-container">
+        
+        <div class="section-header reveal">
+          <div class="section-tag">Resolviendo tus dudas</div>
+          <h2 class="section-title">Preguntas Frecuentes</h2>
+          <p class="section-subtitle">
+            Todo lo que necesitas saber sobre la seguridad de tus datos, el proceso de exportación y la protección de tu cuenta.
+          </p>
+        </div>
+
+        <div class="faq-grid reveal">
+
+          <details class="faq-item" open>
+            <summary class="faq-summary">
+              <span>¿Por qué InSafeFollow nunca te pide tu contraseña ni credenciales?</span>
+              <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </summary>
+            <div class="faq-content">
+              <p>
+                InSafeFollow está diseñado bajo la filosofía <strong>Zero-Knowledge</strong>. Al basarse en la exportación oficial que Meta entrega por ley a cada usuario (RGPD Art. 20), la herramienta solo necesita leer un archivo <code>.zip</code> en la memoria de tu navegador. Jamás necesitamos conectarnos a tus servidores ni tener acceso a tu contraseña.
+              </p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-summary">
+              <span>¿Por qué las aplicaciones de Play Store y App Store provocan baneos?</span>
+              <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </summary>
+            <div class="faq-content">
+              <p>
+                Las apps convencionales simulan un teléfono iniciando sesión desde servidores remotos (AWS, DigitalOcean) en países desconocidos y realizan miles de peticiones automáticas por minuto para escanear tus seguidores. Los cortafuegos de Meta detectan inmediatamente este tráfico anómalo y aplican suspensiones temporales o cierres definitivos de cuenta.
+              </p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-summary">
+              <span>¿Cómo logro que la descarga de datos tarde solo 3 minutos y pese menos de 1 MB?</span>
+              <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </summary>
+            <div class="faq-content">
+              <p>
+                El secreto consiste en hacer clic en el enlace azul <strong>"Borrar todo"</strong> en la pantalla de selección de categorías del Centro de Cuentas de Meta. Esto desmarca gigabytes de vídeos, fotos e historias. Luego marca únicamente la casilla <strong>"Seguidores y seguidos"</strong> en formato <strong>JSON</strong> y calidad más baja. Tu archivo estará listo en tu correo en menos de 5 minutos.
+              </p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-summary">
+              <span>¿Mis datos o fotos se suben o comparten con algún servidor?</span>
+              <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </summary>
+            <div class="faq-content">
+              <p>
+                No, absolutamente nada sale de tu dispositivo. El análisis se realiza al 100% en la memoria RAM de tu navegador web mediante librerías JavaScript locales. Incluso puedes apagar tu conexión Wi-Fi o datos móviles antes de arrastrar el archivo y la herramienta funcionará exactamente igual.
+              </p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-summary">
+              <span>¿Cómo detecta la herramienta quién me ha dejado de seguir recientemente?</span>
+              <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </summary>
+            <div class="faq-content">
+              <p>
+                InSafeFollow utiliza un motor de rotación de snapshots en el almacenamiento local de tu navegador (<code>localStorage</code>). Al subir tu primer archivo se guarda una fotografía de tu estado actual. Cuando vuelves a subir un nuevo archivo semanas después, el sistema realiza una resta de conjuntos matemáticos y te indica con precisión quiénes estaban antes y ya no están ahora.
+              </p>
+            </div>
+          </details>
+
+          <details class="faq-item">
+            <summary class="faq-summary">
+              <span>¿Puedo dejar de seguir a muchas personas de golpe en Instagram?</span>
+              <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </summary>
+            <div class="faq-content">
+              <p>
+                <strong>Consejo de seguridad:</strong> Aunque InSafeFollow te muestra la lista completa de forma instantánea, la propia app de Instagram tiene límites anti-spam (habitualmente entre 50 y 80 unfollows por hora según la antigüedad de tu cuenta). Te recomendamos pulsar en "Ver perfil" y dejar de seguir en lotes pequeños espaciados a lo largo del día para mantener tu cuenta en perfecto estado.
+              </p>
+            </div>
+          </details>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Sección de Marco Legal y Descargo de Responsabilidad -->
+    <section class="section web-section" id="legal">
+      <div class="section-container">
+        
+        <div class="section-header reveal">
+          <div class="section-tag">Garantía Jurídica y Privacidad</div>
+          <h2 class="section-title">Marco Legal, Portabilidad y Transparencia</h2>
+          <p class="section-subtitle">
+            InSafeFollow opera bajo el más estricto apego al marco regulatorio internacional de protección de datos personales.
+          </p>
+        </div>
+
+        <div class="features-matrix reveal">
+          
+          <div class="feature-item" style="border-color: var(--border-medium);">
+            <div class="card-title-row">
+              <div class="feature-icon" style="color: var(--color-success);">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                  <polyline points="14 2 14 8 20 8"></polyline>
+                  <line x1="16" y1="13" x2="8" y2="13"></line>
+                  <line x1="16" y1="17" x2="8" y2="17"></line>
+                  <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+              </div>
+              <h3>1. Derecho a la Portabilidad (RGPD Art. 20)</h3>
+            </div>
+            <p>
+              El Artículo 20 del Reglamento General de Protección de Datos (RGPD) de la Unión Europea y normativas como la CCPA establecen que el titular de los datos tiene el derecho legal inalienable a recibir y transferir sus datos personales en un formato estructurado y de lectura mecánica. InSafeFollow es un lector local que facilita el ejercicio de este derecho legal.
+            </p>
+          </div>
+
+          <div class="feature-item" style="border-color: var(--border-medium);">
+            <div class="card-title-row">
+              <div class="feature-icon" style="color: var(--color-info);">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+              </div>
+              <h3>2. Cero Vulneración ni Actividad Ilícita</h3>
+            </div>
+            <p>
+              Esta herramienta <strong>no incurre en ninguna práctica ilegal</strong>: no intercepta comunicaciones, no burla mecanismos tecnológicos de autenticación, no realiza web scraping no autorizado y no utiliza APIs privadas. La aplicación se ejecuta de manera confinada en el navegador del usuario final (100% Client-Side).
+            </p>
+          </div>
+
+          <div class="feature-item" style="border-color: var(--border-medium);">
+            <div class="card-title-row">
+              <div class="feature-icon" style="color: var(--accent-hover);">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+              </div>
+              <h3>3. Descargo de Marcas (Nominative Fair Use)</h3>
+            </div>
+            <p>
+              InSafeFollow es una herramienta independiente y de código abierto. No está patrocinada, asociada, respaldada ni afiliada formalmente a Meta Platforms, Inc. Las marcas registradas <em>"Instagram"</em> y <em>"Meta"</em> pertenecen exclusivamente a sus titulares. Cualquier mención a dichas marcas se efectúa con fines estrictamente descriptivos y de compatibilidad tecnológica (Uso Legítimo Nominativo).
+            </p>
+          </div>
+
+          <div class="feature-item" style="border-color: var(--border-medium);">
+            <div class="card-title-row">
+              <div class="feature-icon" style="color: var(--color-success);">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+              </div>
+              <h3>4. Cero Almacenamiento Remoto de Datos</h3>
+            </div>
+            <p>
+              InSafeFollow no cuenta con bases de datos en la nube ni servidores que almacenen información personal. Los registros y snapshots quedan guardados de manera exclusiva en el almacenamiento local del dispositivo del usuario (<code>localStorage</code>), bajo su control total y eliminables en cualquier momento.
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Banner CTA Final (Visible solo en móvil como llamada a la acción con formato idéntico a dropzone) -->
+    <section class="section section-cta-final">
+      <div class="section-container">
+        <div class="cta-banner reveal">
+          <div class="nav-brand" style="justify-content: center; margin-bottom: 4px;">
+            <div class="nav-brand-badge">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+              </svg>
+            </div>
+            <span>InSafeFollow</span>
+          </div>
+          <div class="cta-content">
+            <h2 class="cta-title">Audita tu cuenta en segundos</h2>
+            <p class="cta-hint">Sin descargas sospechosas, sin registros y sin contraseñas.</p>
+          </div>
+          <div class="cta-actions">
+            <a href="app.html" class="btn btn-primary" title="Abrir InSafeFollow">
+              <span>Abrir Analizador InSafeFollow</span>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+                <polyline points="12 5 19 12 12 19"></polyline>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="landing-footer">
+    <div class="footer-container">
+      <div class="footer-brand-wrap">
+        <div class="nav-brand">
+          <div class="nav-brand-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+          </div>
+          <span>InSafeFollow</span>
+        </div>
+        <p class="footer-tagline">
+          Herramienta de auditoría local independiente para conexiones y relaciones en redes sociales.
+        </p>
+      </div>
+
+      <div class="footer-disclaimer">
+        <p>
+          <strong>Aviso Legal y Descargo de Responsabilidad:</strong> InSafeFollow es un software independiente de código abierto que procesa archivos de exportación en el lado del cliente (navegador del usuario) bajo el amparo legal del derecho a la portabilidad de datos (RGPD Art. 20 / CCPA). Este proyecto no recopila credenciales, no interactúa con APIs privadas, no almacena datos en servidores externos y no está afiliado, respaldado, asociado ni patrocinado por Meta Platforms, Inc. ni Instagram. Instagram® y Meta® son marcas comerciales registradas de Meta Platforms, Inc. Su uso es meramente identificativo y descriptivo bajo la doctrina de Uso Legítimo Nominativo (Nominative Fair Use).
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Menú Móvil a Pantalla Completa (100% Fullscreen Overlay) -->
+  <div id="mobileDrawer" class="drawer-backdrop" aria-hidden="true">
+    <div class="drawer-panel" role="dialog" aria-label="Menú de navegación móvil">
+      <div class="drawer-header">
+        <div class="drawer-brand">
+          <div class="nav-brand-badge" style="width: 28px; height: 28px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            </svg>
+          </div>
+          <span>InSafeFollow</span>
+        </div>
+        <button id="closeDrawerBtn" class="drawer-close-btn" aria-label="Cerrar menú">✕</button>
+      </div>
+
+      <nav class="drawer-nav">
+        <a href="app.html" class="drawer-link primary">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="23 4 23 10 17 10"></polyline>
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+          </svg>
+          <span>Abrir App ↗</span>
+        </a>
+        <a href="#hero-view" class="drawer-link drawer-nav-item active" data-target-view="hero-view">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+          </svg>
+          <span>Inicio</span>
+        </a>
+        <a href="#demo-preview" class="drawer-link drawer-nav-item" data-target-view="demo-preview" style="display: none;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+            <line x1="8" y1="21" x2="16" y2="21"></line>
+            <line x1="12" y1="17" x2="12" y2="21"></line>
+          </svg>
+          <span>Demostración</span>
+        </a>
+        <a href="#comparativa" class="drawer-link drawer-nav-item" data-target-view="comparativa">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+          </svg>
+          <span>¿Por qué es seguro?</span>
+        </a>
+        <a href="#como-funciona" class="drawer-link drawer-nav-item" data-target-view="como-funciona">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 14 14"></polyline>
+          </svg>
+          <span>Paso a paso</span>
+        </a>
+        <a href="#ventajas" class="drawer-link drawer-nav-item" data-target-view="ventajas">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+          </svg>
+          <span>Características</span>
+        </a>
+        <a href="#faq" class="drawer-link drawer-nav-item" data-target-view="faq">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+          <span>Preguntas frecuentes</span>
+        </a>
+        <a href="#legal" class="drawer-link drawer-nav-item" data-target-view="legal">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="16" y1="2" x2="16" y2="6"></line>
+            <line x1="8" y1="2" x2="8" y2="6"></line>
+            <line x1="3" y1="10" x2="21" y2="10"></line>
+          </svg>
+          <span>Marco Legal</span>
+        </a>
+      </nav>
+
+      <div class="drawer-footer">
+        100% en tu navegador • Cero contraseñas
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts de Procesamiento Local y Lógica de Landing -->
+  <script src="js/vendor/fflate.js"></script>
+  <script src="js/parser.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/landing.js"></script>
+</body>
+</html>
