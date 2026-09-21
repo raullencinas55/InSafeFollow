@@ -84,7 +84,12 @@ window.InSafeFollowStorage = (function () {
   }
 
   /**
-   * Realiza todos los cálculos de conjuntos matemáticos
+   * Realiza todos los cálculos de teoría de conjuntos matemáticos sobre las conexiones.
+   * Complejidad Algorítmica:
+   *  - Tiempo: O(N + M) lineal mediante tablas hash (Map / Set) con búsquedas O(1).
+   *  - Espacio: O(N + M) para normalización y particionado en memoria.
+   *
+   * @returns {Object|null} Retorna el objeto de diferencias particionado o null si no hay snapshot activo.
    */
   function calculateDiffs() {
     const current = getCurrentSnapshot();

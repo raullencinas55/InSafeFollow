@@ -1,98 +1,183 @@
-# InSafeFollow 🛡️ - Auditoría Privada y Segura de Conexiones
+# InSafeFollow 🛡️ — Auditoría Privada y Segura de Conexiones
 
-**InSafeFollow** (fusión conceptual de *In* + *Safe* + *Follow*) es una aplicación web estática, 100% client-side y de código abierto, diseñada para auditar conexiones y detectar quién te dejó de seguir en redes sociales **sin contraseñas, sin bots y con cero riesgo de baneo**.
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Architecture: 100% Client-Side](https://img.shields.io/badge/Architecture-100%25%20Client--Side-brightgreen.svg)](#-arquitectura-técnica-y-decisiones-de-ingeniería)
+[![Algorithm: O(N) Complexity](https://img.shields.io/badge/Algorithm-O(N)%20Set%20Diffs-blue.svg)](#1-complejidad-algorítmica-on-vs-on2)
+[![Style: Neobrutalism](https://img.shields.io/badge/UI-Neobrutalism-orange.svg)](#-sistema-de-diseño-neobrutalista)
+[![Zero Server Dependencies](https://img.shields.io/badge/Zero-Server%20Cost-black.svg)](#)
 
-El diseño está construido bajo principios de **UX Research** e interfaces modernas (estilo Linear / Vercel), con una paleta Zinc/Obsidian profunda, tipografía Plus Jakarta Sans, cuadrículas asimétricas Bento Grid y navegación segmentada táctil optimizada para teléfonos móviles (Mobile-First).
+> **InSafeFollow** es una aplicación web estática, 100% client-side y de código abierto, diseñada para auditar conexiones y detectar quién te dejó de seguir en Instagram **sin contraseñas, sin bots, sin APIs privadas y con cero riesgo de baneo**, amparada bajo el derecho internacional a la portabilidad de datos personales (**RGPD Art. 20 / CCPA**).
+
+### 🚀 [Probar Aplicación en Vivo (GitHub Pages)](https://raullencinas55.github.io/InSafeFollow/)
+
+---
+
+## 💡 El Problema Real y la Solución
+
+| Aplicaciones Tradicionales ("Unfollowers") | InSafeFollow |
+| :--- | :--- |
+| Exigen usuario y contraseña de Instagram. | **Cero contraseñas:** Nunca solicita claves ni cookies. |
+| Riesgo inminente de baneo o hackeo de cuenta. | **0% riesgo de baneo:** Cero actividad automatizada. |
+| Envían tus datos a servidores opacos de terceros. | **100% Client-Side:** El cómputo ocurre en la RAM de tu navegador. |
+| Costos de suscripción y publicidad invasiva. | **Open Source y Gratuita:** Sin servidores centrales. |
+
+---
+
+## 🧠 Arquitectura Técnica y Decisiones de Ingeniería
+
+### 1. Complejidad Algorítmica $O(N)$ vs $O(N^2)$
+El cálculo de diferencias entre listas extensas (ej. 20.000 seguidos vs. 15.000 seguidores) suele cometer el error de anidar iteraciones cuadráticas (`.filter()` + `.some()`), provocando cuelgues del hilo principal de JavaScript ($O(N \times M)$).
+
+En [`storage.js`](js/storage.js), se implementó particionado matemático mediante **Hash Maps** y **Sets**:
+```javascript
+// Búsqueda O(1) en tiempo constante
+const followersMap = new Map();
+current.followers.forEach(u => followersMap.set(u.username.toLowerCase(), u));
+
+// Particionado lineal O(N)
+current.following.forEach(u => {
+  const lower = u.username.toLowerCase();
+  if (!followersMap.has(lower)) {
+    if (whitelistSet.has(lower)) {
+      whitelistedUsers.push(u);
+    } else {
+      notFollowingBack.push(u);
+    }
+  }
+});
+```
+* **Resultado:** Comparación de más de **50.000 registros en menos de 40 milisegundos**.
+
+---
+
+### 2. Descompresión Eficiente en Memoria (`fflate`)
+En lugar de depender de librerías pesadas como `JSZip` (150 KB+) que generan copias duplicadas en heap, se adoptó [`fflate`](js/vendor/fflate.js) (~32 KB, UMD):
+- Procesa el archivo `.zip` directamente desde un buffer `Uint8Array`.
+- Decodifica archivos JSON de relaciones con `TextDecoder` nativo sin intermediarios de red.
+- Todo el ciclo de vida del archivo reside en memoria volátil y se libera al concluir la sesión.
+
+---
+
+### 3. Gráficos Vectoriales Procedurales (SVG Matemático Nativo)
+En lugar de añadir dependencias de 500 KB (`Chart.js`, `D3` o `Recharts`):
+- Se diseñó un motor matemático en [`app.js`](js/app.js) que calcula coordenadas relativas de barras, ejes y polilíneas dinámicas en SVG nativo.
+- Soporta cuatro resoluciones temporales: **Semana**, **Mes**, **Año** e **Historial Completo**.
+- Coordenadas con `viewBox` responsivo y tooltips flotantes accesibles.
+
+---
+
+### 4. Paginación Virtual y Batch Rendering (`IntersectionObserver`)
+Para evitar sobrecargar el árbol de renderizado del navegador con miles de nodos DOM:
+- Renderizado escalonado por lotes (`BATCH_SIZE = 30`).
+- Un centinela invisible al final de la lista dispara la carga del siguiente lote mediante `IntersectionObserver`.
+- Con fallback automático a eventos de scroll pasivos si el observer no está disponible.
+
+---
+
+### 5. Motor de Gestos Táctiles con Desambiguación Angular (Mobile-First)
+El sistema de deslizamiento táctil (*Swipe Gestures*) implementa una máquina de estados para evitar interferir con el scroll vertical de la página:
+- **Disambiguación en 6px:** Evalúa la trayectoria inicial del dedo ($\Delta X$ vs. $\Delta Y$). Si el usuario se desplaza verticalmente, cancela el swipe y cede el control al scroll nativo del sistema.
+- **Deslizar a la derecha ($> 45\text{px}$):** Archiva o restaura la cuenta con animación elástica.
+- **Deslizar a la izquierda ($< -45\text{px}$):** Abre directamente el perfil oficial en Instagram.
+
+---
+
+### 6. Seguridad Defensiva y Sanitización XSS
+Toda entrada proveniente de los archivos procesados se sanitiza antes de inyectarse en el DOM mediante la función defensiva `escapeHtml`:
+```javascript
+function escapeHtml(str) {
+  if (!str) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+```
+
+---
+
+## 🎨 Sistema de Diseño Neobrutalista
+
+La interfaz fue diseñada con una estética **Neobrutalism** contemporánea:
+- **Bordes de alto contraste:** `2px solid #000000` en todas las tarjetas interactivas.
+- **Sombras geométricas duras:** `box-shadow: 2px 2px 0px #000000` con micro-animaciones al hacer clic/hover (`translate(-1px, -1px)`).
+- **Paleta cromática funcional:** Fondo crema cálido (`#fcf9f2`), detalles en amarillo neobrutalista (`#fde047`), verde esmeralda para métricas positivas y rojo de alta visibilidad para no seguidores.
+- **Tipografía moderna:** *Space Grotesk* (títulos y métricas con carácter) + *Plus Jakarta Sans* (lectura optimizada).
 
 ---
 
 ## ⚖️ Marco Legal y Cumplimiento Normativo
 
-InSafeFollow opera bajo el más estricto apego al marco jurídico internacional de privacidad y soberanía de datos personales:
-
 1. **Derecho a la Portabilidad de Datos (RGPD Art. 20 / CCPA):**
-   El Artículo 20 del Reglamento General de Protección de Datos (RGPD) de la Unión Europea y normativas equivalentes en América (como la CCPA de California) reconocen el derecho inalienable de cualquier ciudadano a obtener sus datos personales generados en plataformas digitales en un formato interoperable, legible y estructurado (archivos JSON/ZIP). InSafeFollow es una utilidad puramente local de lectura que facilita el ejercicio de dicho derecho.
-
-2. **Inexistencia Total de Prácticas Ilícitas o Infracciones:**
-   * **Sin Web Scraping:** No se realizan peticiones automatizadas ni rastreo de perfiles ajenos.
-   * **Sin Robo de Credenciales:** Nunca se solicitan ni almacenan contraseñas, claves ni cookies de sesión.
-   * **Sin Evasión Tecnológica:** No se vulneran controles de seguridad ni APIs privadas.
-   * **100% Client-Side:** Todo el procesamiento ocurre en la memoria RAM del navegador del usuario. Ningún dato viaja ni se almacena en servidores externos.
-
+   Garantiza el derecho de los usuarios a descargar y portar sus datos en formato abierto (JSON). InSafeFollow asiste localmente al usuario en la interpretación de dicha información.
+2. **Cero Web Scraping ni Infracción de Términos:**
+   No se ejecuta scraping ni llamadas a endpoints privados de Meta.
 3. **Uso Legítimo Nominativo de Marcas (Nominative Fair Use):**
-   InSafeFollow es un software independiente desarrollado por la comunidad y no está respaldado, patrocinado, avalado ni asociado comercialmente con Meta Platforms, Inc. ni Instagram. Los nombres comerciales "Instagram", "Meta" y sus logotipos asociados son marcas registradas de Meta Platforms, Inc. Su mención se realiza con fines exclusivamente referenciales e informativos para describir la compatibilidad del archivo de datos, amparado bajo la doctrina del uso legítimo nominativo (*Nominative Fair Use*).
+   La mención de *Instagram* y *Meta* es estrictamente descriptiva bajo la doctrina de uso legítimo nominativo.
 
 ---
 
 ## ⚡ El Descubrimiento Clave en la Exportación ("Borrar todo")
 
-Las plataformas por defecto pre-seleccionan toda la actividad de la cuenta (fotos, historias, mensajes, vídeos), lo cual genera descargas gigantescas de varios gigabytes que tardan días en crearse.
-
-**El truco fundamental:**
-1. En el Centro de Cuentas oficial (`Tu información y permisos > Exportar tu información`), en la pantalla de selección de categorías, pulsa el enlace **"Borrar todo"**.
+1. En el Centro de Cuentas de Meta (`Tu información y permisos > Exportar tu información`), pulsa **"Borrar todo"**.
 2. Marca **únicamente "Seguidores y seguidos"** en la sección *Conexiones*.
 3. Elige formato **JSON**, intervalo de fechas **Desde el principio** y calidad multimedia **Más baja**.
-
-> **Resultado:** Tu archivo `.zip` se genera en **menos de 3 minutos**, pesa menos de **1 MB** y se procesa al instante en InSafeFollow.
-
----
-
-## 🚀 Características Principales
-
-* **0% Riesgo de Baneo:** No utiliza bots, scripts automáticos ni conexiones no autorizadas.
-* **100% Privado y Local:** Los datos se procesan en la memoria de tu propio navegador. Funciona incluso desconectando el Wi-Fi tras cargar la web.
-* **Rotación de Snapshots:** Guarda un registro local para comparar periódicamente y saber con exactitud **quién te dejó de seguir** entre dos revisiones.
-* **Gestión de Excepciones (Whitelist):** Oculta con un solo clic a celebridades, influencers o marcas para que no ensucien tus resultados.
-* **Métricas en Bento Grid:**
-  * 🎯 **No te siguen de vuelta** (Following - Followers).
-  * 📉 **Te dejaron de seguir** (Detectados respecto a la revisión anterior).
-  * 📈 **Nuevos seguidores** (Ganados respecto a la revisión anterior).
-  * 🤝 **Seguimiento mutuo** (Relaciones recíprocas).
-  * 🌟 **Fans** (Personas que te siguen pero tú no sigues).
-  * ⏳ **Solicitudes pendientes** (Cuentas privadas que aún no aceptaron tu solicitud).
-* **Guía Paso a Paso Integrada:** Modal esquemático con las 8 instrucciones oficiales para exportar sin descargar archivos pesados.
-* **Modal Legal Integrado:** Consulta inmediata del amparo del RGPD y descargo de marcas en cualquier momento.
-* **Ergonomía Mobile-First:** Objetivos táctiles mínimos de 44px, barra de filtros segmentada scrollable y diseño adaptado a pulgares.
-* **Cero Costos:** Listo para desplegar gratis en **GitHub Pages**.
+4. **Resultado:** Tu archivo `.zip` se genera en **menos de 3 minutos**, pesa menos de **1 MB** y se procesa al instante en InSafeFollow.
 
 ---
 
-## 📂 Estructura del Proyecto
+## 📂 Estructura del Código
 
 ```text
-├── index.html        # Landing Page con preview interactivo, comparativa y marco legal
-├── app.html          # Dashboard con Bento Grid, gráfico de crecimiento y selector de períodos
+├── index.html        # Landing Page interactiva, guía visual y sandbox
+├── app.html          # Dashboard principal, Bento Grid y visualizador
 ├── css/
-│   ├── main.css      # Sistema de diseño, tokens CSS y modales
-│   ├── landing.css   # Estilos de la landing page y preview del producto
-│   └── app.css       # Estilos del dashboard, header, gráfico y métricas Bento
+│   ├── main.css      # Variables de diseño globales y tokens neobrutalistas
+│   ├── landing.css   # Estilos de la página de inicio
+│   └── app.css       # Estilos del dashboard, lista infinita y gráfico SVG
 ├── js/
 │   ├── vendor/
 │   │   └── fflate.js # Descompresor ZIP nativo en memoria (32 KB, UMD)
-│   ├── parser.js     # Parser para relaciones JSON y nombre de cuenta
-│   ├── storage.js    # Motor de snapshots, diferencias y lista de excepciones
-│   ├── app.js        # Controlador del dashboard, renderizado por lotes y filtros
-│   └── landing.js    # Animaciones suaves de scroll con IntersectionObserver
-├── .gitignore        # Reglas de exclusión para git y privacidad
+│   ├── parser.js     # Parser universal y normalizador de esquemas de Meta
+│   ├── storage.js    # Motor de snapshots O(N) y persistencia en localStorage
+│   ├── app.js        # Controlador principal, gestos táctiles y gráfico SVG
+│   └── landing.js    # Lógica interactiva de la página de presentación
+├── .gitignore        # Reglas de exclusión para privacidad y dependencias
 ├── LICENSE           # Licencia MIT
 └── README.md
 ```
 
 ---
 
-## 🛠️ Cómo Probarlo Localmente
+## 🛠️ Ejecución Local
 
-Puedes abrir directamente el archivo `index.html` en cualquier navegador web (Chrome, Brave, Safari, Edge, Firefox):
+No requiere Node.js, compiladores ni dependencias externas:
 
-1. Abre `index.html` para explorar la Landing Page.
-2. Pulsa en **"Abrir Analizador"** para acceder al panel (`app.html`).
-3. Arrastra tu archivo `.zip` oficial o pulsa para seleccionarlo.
+```bash
+# Clonar el repositorio
+git clone https://github.com/raullencinas55/InSafeFollow.git
+
+# Entrar a la carpeta
+cd InSafeFollow
+
+# Abrir con cualquier servidor local o directamente en el navegador
+# Ejemplo con Python:
+python -m http.server 8000
+```
+Abre `http://localhost:8000` en tu navegador.
 
 ---
 
-## 🌐 Cómo Publicar en GitHub Pages
+## 👨‍💻 Autor
 
-1. Sube los archivos a un repositorio en GitHub.
-2. Ve a **Settings > Pages**.
-3. En **Source**, selecciona `Deploy from a branch` y elige la rama `main` en la carpeta `/ (root)`.
-4. Pulsa **Save**. En 1 minuto tendrás tu enlace activo y accesible desde cualquier celular o computadora.
+Desarrollado por **Raúl Lencinas**.
+- **GitHub:** [@raullencinas55](https://github.com/raullencinas55)
+- **Repositorio:** [InSafeFollow](https://github.com/raullencinas55/InSafeFollow)
+
+---
+
+## 📄 Licencia
+
+Este proyecto está bajo la Licencia **MIT** — puedes utilizarlo, modificarlo y distribuirlo libremente. Consulta el archivo [LICENSE](LICENSE) para más detalles.

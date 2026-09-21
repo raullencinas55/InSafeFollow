@@ -70,6 +70,54 @@ document.addEventListener('DOMContentLoaded', () => {
   let chartOffset = 0;
   let isChartOpen = false;
 
+  // ==========================================
+  // Constantes del Sistema (Evitar Magic Numbers)
+  // ==========================================
+  const MS_PER_DAY = 24 * 60 * 60 * 1000;
+  const BATCH_SIZE = 30;
+  const SWIPE_ACTION_THRESHOLD_PX = 45;
+  const SWIPE_DIRECTION_LOCK_PX = 6;
+  const SWIPE_VISUAL_FEEDBACK_PX = 18;
+  const MAX_SWIPE_DISPLACEMENT_PX = 130;
+
+  /**
+   * Sanitización defensiva contra XSS para inyección en el DOM
+   * @param {string|number|null} str
+   * @returns {string}
+   */
+  function escapeHtml(str) {
+    if (str === null || str === undefined) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
+  /**
+   * Recalcula diferencias de snapshots, actualiza contadores y refresca la vista activa (DRY)
+   */
+  function refreshDashboardData() {
+    currentDiffs = InSafeFollowStorage.calculateDiffs();
+    updateCounters();
+    renderResults();
+  }
+
+  /**
+   * Alterna el estado de archivado de una cuenta de forma centralizada
+   * @param {string} username
+   * @param {boolean} isCurrentlyArchived
+   */
+  function handleArchiveToggle(username, isCurrentlyArchived) {
+    if (isCurrentlyArchived) {
+      InSafeFollowStorage.removeFromWhitelist(username);
+    } else {
+      InSafeFollowStorage.addToWhitelist(username);
+    }
+    refreshDashboardData();
+  }
+
   const categoryLabels = {
     notFollowingBack: 'No te siguen de vuelta',
     unfollowedYou: 'Te dejaron de seguir',
@@ -95,7 +143,6 @@ document.addEventListener('DOMContentLoaded', () => {
   let activeTab = 'notFollowingBack';
   let searchQuery = '';
   let sortMode = 'date-desc'; // 'date-desc' (por defecto: más recientes), 'date-asc', 'alpha-asc', 'alpha-desc'
-  const BATCH_SIZE = 30;
   let visibleCount = BATCH_SIZE;
   let infiniteObserver = null;
   let isRenderingBatch = false;
@@ -734,7 +781,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (granularity === 'day') {
       // Semana (7 días) desplazable con flechas
       const baseEnd = new Date(lastFollowerDate.getFullYear(), lastFollowerDate.getMonth(), lastFollowerDate.getDate(), 23, 59, 59, 999);
-      const targetEndDate = new Date(baseEnd.getTime() + chartOffset * 7 * 86400000);
+      const targetEndDate = new Date(baseEnd.getTime() + chartOffset * 7 * MS_PER_DAY);
       const targetStartDate = new Date(targetEndDate.getFullYear(), targetEndDate.getMonth(), targetEndDate.getDate() - 6, 0, 0, 0, 0);
 
       canPrev = targetStartDate.getTime() > firstFollowerDate.getTime();
@@ -1138,6 +1185,12 @@ document.addEventListener('DOMContentLoaded', () => {
       `;
     }
 
+    const safeUsername = escapeHtml(user.username);
+    const safeName = user.name ? escapeHtml(user.name) : '';
+    const safeHref = escapeHtml(igUrl);
+    const safeInitial = escapeHtml(initial);
+    const safeDate = dateString ? escapeHtml(dateString) : '';
+
     row.innerHTML = `
       <div class="user-row-swipe-bg">
         <span class="swipe-action-label-left">${isArchivedTab ? '↩️ Restaurar' : '📦 Archivar'}</span>
@@ -1145,16 +1198,16 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
       <div class="user-row-content">
         <div class="user-identity">
-          <div class="user-monogram-avatar"><span>${isHashtag ? '#' : initial}</span></div>
+          <div class="user-monogram-avatar"><span>${isHashtag ? '#' : safeInitial}</span></div>
           <div class="user-text-meta">
-            <span class="user-handle-name">${isHashtag ? '#' : '@'}${user.username}</span>
-            ${user.name ? `<span class="user-real-name" style="font-size:0.75rem; color:var(--text-muted); font-weight:600;">${user.name}</span>` : ''}
-            ${dateString ? `<span class="user-subtext-date">${dateString}</span>` : ''}
+            <span class="user-handle-name">${isHashtag ? '#' : '@'}${safeUsername}</span>
+            ${safeName ? `<span class="user-real-name" style="font-size:0.75rem; color:var(--text-muted); font-weight:600;">${safeName}</span>` : ''}
+            ${safeDate ? `<span class="user-subtext-date">${safeDate}</span>` : ''}
           </div>
         </div>
         <div class="user-item-actions">
           ${actionBtnHtml}
-          <a href="${igUrl}" target="_blank" rel="noopener noreferrer" class="row-action-btn btn-ig-open" title="${isHashtag ? 'Ver hashtag en Instagram' : 'Ver perfil en Instagram'}">
+          <a href="${safeHref}" target="_blank" rel="noopener noreferrer" class="row-action-btn btn-ig-open" title="${isHashtag ? 'Ver hashtag en Instagram' : 'Ver perfil en Instagram'}">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
               <circle cx="12" cy="12" r="3"></circle>
@@ -1165,27 +1218,21 @@ document.addEventListener('DOMContentLoaded', () => {
       </div>
     `;
 
-    // Clic en botón Archivar
+    // Clic en botón Archivar (DRY)
     const ignoreBtn = row.querySelector('.btn-ignore');
     if (ignoreBtn) {
       ignoreBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        InSafeFollowStorage.addToWhitelist(user.username);
-        currentDiffs = InSafeFollowStorage.calculateDiffs();
-        updateCounters();
-        renderResults();
+        handleArchiveToggle(user.username, false);
       });
     }
 
-    // Clic en botón Restaurar
+    // Clic en botón Restaurar (DRY)
     const restoreBtn = row.querySelector('.btn-restore');
     if (restoreBtn) {
       restoreBtn.addEventListener('click', (e) => {
         e.stopPropagation();
-        InSafeFollowStorage.removeFromWhitelist(user.username);
-        currentDiffs = InSafeFollowStorage.calculateDiffs();
-        updateCounters();
-        renderResults();
+        handleArchiveToggle(user.username, true);
       });
     }
 
@@ -1221,7 +1268,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!directionLocked) {
           const absX = Math.abs(dx);
           const absY = Math.abs(dy);
-          if (absX < 6 && absY < 6) return;
+          if (absX < SWIPE_DIRECTION_LOCK_PX && absY < SWIPE_DIRECTION_LOCK_PX) return;
           directionLocked = true;
           isHorizontal = absX >= absY;
         }
@@ -1232,13 +1279,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (e && e.cancelable) e.preventDefault();
-        currentDx = Math.max(-130, Math.min(130, dx));
+        currentDx = Math.max(-MAX_SWIPE_DISPLACEMENT_PX, Math.min(MAX_SWIPE_DISPLACEMENT_PX, dx));
         rowContent.style.transform = `translateX(${currentDx}px)`;
 
-        if (currentDx > 18) {
+        if (currentDx > SWIPE_VISUAL_FEEDBACK_PX) {
           row.classList.add('swiping-right');
           row.classList.remove('swiping-left');
-        } else if (currentDx < -18) {
+        } else if (currentDx < -SWIPE_VISUAL_FEEDBACK_PX) {
           row.classList.add('swiping-left');
           row.classList.remove('swiping-right');
         } else {
@@ -1252,20 +1299,13 @@ document.addEventListener('DOMContentLoaded', () => {
         rowContent.style.transition = 'transform 0.22s cubic-bezier(0.16, 1, 0.3, 1)';
         row.classList.remove('swiping-right', 'swiping-left');
 
-        if (currentDx > 45) {
+        if (currentDx > SWIPE_ACTION_THRESHOLD_PX) {
           // Deslizar a la derecha: Archivar o Restaurar
           rowContent.style.transform = 'translateX(105%)';
           setTimeout(() => {
-            if (activeTab === 'whitelistedUsers') {
-              InSafeFollowStorage.removeFromWhitelist(user.username);
-            } else {
-              InSafeFollowStorage.addToWhitelist(user.username);
-            }
-            currentDiffs = InSafeFollowStorage.calculateDiffs();
-            updateCounters();
-            renderResults();
+            handleArchiveToggle(user.username, activeTab === 'whitelistedUsers');
           }, 180);
-        } else if (currentDx < -45) {
+        } else if (currentDx < -SWIPE_ACTION_THRESHOLD_PX) {
           // Deslizar a la izquierda: Abrir perfil en Instagram
           rowContent.style.transform = 'translateX(0px)';
           window.open(igUrl, '_blank', 'noopener,noreferrer');
