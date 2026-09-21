@@ -1206,6 +1206,7 @@ html, body {
     justify-content: space-between;
     gap: 8px;
     padding: 7px 10px;
+    touch-action: pan-y;
   }
 
   .user-identity {
@@ -1217,29 +1218,55 @@ html, body {
   .user-item-actions {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
     flex-shrink: 0;
   }
 
   .row-action-btn {
-    width: 32px;
-    height: 32px;
-    min-height: 32px;
-    padding: 0;
+    height: 30px;
+    min-height: 30px;
+    padding: 0 8px;
+    width: auto;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    gap: 4px;
     border-radius: var(--radius-xs);
+    font-size: 0.70rem;
+    font-weight: 800;
   }
 
   .row-action-btn span {
-    display: none !important;
+    display: inline !important;
   }
 
   .row-action-btn svg {
-    width: 15px;
-    height: 15px;
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
   }
+}
+
+.swipe-hint-bar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 6px 12px;
+  background: #fefce8;
+  border-left: 2px solid #000000;
+  border-right: 2px solid #000000;
+  border-bottom: 1.5px solid #000000;
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #713f12;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.swipe-hint-bar b {
+  font-weight: 800;
+  color: #000000;
 }
 
 .user-identity {

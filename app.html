@@ -7,8 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/main.css">
-  <link rel="stylesheet" href="css/app.css">
+  <link rel="stylesheet" href="css/main.css?v=1.2.0">
+  <link rel="stylesheet" href="css/app.css?v=1.2.0">
 </head>
 <body>
 
@@ -303,6 +303,15 @@
               <div class="widget-value success" data-count="closeFriends">0</div>
               <div class="widget-subtext">En tu lista verde de Close Friends</div>
             </div>
+
+            <div class="metric-widget" data-tab="whitelistedUsers">
+              <div class="widget-top">
+                <span class="widget-label">Cuentas archivadas</span>
+                <span class="badge badge-neutral">Ignoradas</span>
+              </div>
+              <div class="widget-value" data-count="whitelistedUsers">0</div>
+              <div class="widget-subtext">Cuentas que decidiste archivar</div>
+            </div>
           </section>
 
           <!-- Hint de Navegación -->
@@ -438,6 +447,11 @@
                 📦 Archivadas (<span id="archivedChipCount">0</span>)
               </button>
             </div>
+          </div>
+
+          <!-- Banner Guía de Gestos Táctiles Móvil -->
+          <div class="swipe-hint-bar">
+            <span>👉 Desliza a la derecha para <b>Archivar</b> • Izquierda para <b>Ver Perfil</b> 👈</span>
           </div>
 
           <!-- Ventana de Usuarios con Scroll Infinito -->
@@ -716,8 +730,8 @@
 
   <!-- Scripts -->
   <script src="js/vendor/fflate.js"></script>
-  <script src="js/parser.js"></script>
-  <script src="js/storage.js"></script>
-  <script src="js/app.js"></script>
+  <script src="js/parser.js?v=1.2.0"></script>
+  <script src="js/storage.js?v=1.2.0"></script>
+  <script src="js/app.js?v=1.2.0"></script>
 </body>
 </html>

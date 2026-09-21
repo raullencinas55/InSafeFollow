@@ -1189,59 +1189,70 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    // Gestos táctiles de deslizamiento (Touch Swipe)
+    // Gestos de deslizamiento táctil y ratón (Swipe Gestures)
     const rowContent = row.querySelector('.user-row-content');
-    let touchStartX = 0;
-    let touchStartY = 0;
+    let startX = 0;
+    let startY = 0;
     let currentDx = 0;
-    let isHorizontalSwipe = false;
+    let isTracking = false;
+    let directionLocked = false;
+    let isHorizontal = false;
 
     if (rowContent) {
-      rowContent.addEventListener('touchstart', (e) => {
-        if (e.touches.length !== 1) return;
-        touchStartX = e.touches[0].clientX;
-        touchStartY = e.touches[0].clientY;
+      function startSwipe(clientX, clientY, target) {
+        if (target && target.closest && target.closest('button, a')) {
+          return false;
+        }
+        startX = clientX;
+        startY = clientY;
         currentDx = 0;
-        isHorizontalSwipe = false;
+        isTracking = true;
+        directionLocked = false;
+        isHorizontal = false;
         rowContent.style.transition = 'none';
-      }, { passive: true });
+        return true;
+      }
 
-      rowContent.addEventListener('touchmove', (e) => {
-        if (e.touches.length !== 1) return;
-        const dx = e.touches[0].clientX - touchStartX;
-        const dy = e.touches[0].clientY - touchStartY;
+      function moveSwipe(clientX, clientY, e) {
+        if (!isTracking) return;
+        const dx = clientX - startX;
+        const dy = clientY - startY;
 
-        if (!isHorizontalSwipe) {
-          if (Math.abs(dy) > Math.abs(dx)) {
-            return; // Permite el scroll vertical natural
-          }
-          if (Math.abs(dx) > 10) {
-            isHorizontalSwipe = true;
-          }
+        if (!directionLocked) {
+          const absX = Math.abs(dx);
+          const absY = Math.abs(dy);
+          if (absX < 6 && absY < 6) return;
+          directionLocked = true;
+          isHorizontal = absX >= absY;
         }
 
-        if (isHorizontalSwipe) {
-          if (e.cancelable) e.preventDefault();
-          currentDx = Math.max(-130, Math.min(130, dx));
-          rowContent.style.transform = `translateX(${currentDx}px)`;
-
-          if (currentDx > 25) {
-            row.classList.add('swiping-right');
-            row.classList.remove('swiping-left');
-          } else if (currentDx < -25) {
-            row.classList.add('swiping-left');
-            row.classList.remove('swiping-right');
-          } else {
-            row.classList.remove('swiping-right', 'swiping-left');
-          }
+        if (!isHorizontal) {
+          isTracking = false;
+          return;
         }
-      }, { passive: false });
 
-      rowContent.addEventListener('touchend', () => {
+        if (e && e.cancelable) e.preventDefault();
+        currentDx = Math.max(-130, Math.min(130, dx));
+        rowContent.style.transform = `translateX(${currentDx}px)`;
+
+        if (currentDx > 18) {
+          row.classList.add('swiping-right');
+          row.classList.remove('swiping-left');
+        } else if (currentDx < -18) {
+          row.classList.add('swiping-left');
+          row.classList.remove('swiping-right');
+        } else {
+          row.classList.remove('swiping-right', 'swiping-left');
+        }
+      }
+
+      function endSwipe() {
+        if (!isTracking && !isHorizontal && currentDx === 0) return;
+        isTracking = false;
         rowContent.style.transition = 'transform 0.22s cubic-bezier(0.16, 1, 0.3, 1)';
         row.classList.remove('swiping-right', 'swiping-left');
 
-        if (currentDx > 65) {
+        if (currentDx > 45) {
           // Deslizar a la derecha: Archivar o Restaurar
           rowContent.style.transform = 'translateX(105%)';
           setTimeout(() => {
@@ -1254,7 +1265,7 @@ document.addEventListener('DOMContentLoaded', () => {
             updateCounters();
             renderResults();
           }, 180);
-        } else if (currentDx < -65) {
+        } else if (currentDx < -45) {
           // Deslizar a la izquierda: Abrir perfil en Instagram
           rowContent.style.transform = 'translateX(0px)';
           window.open(igUrl, '_blank', 'noopener,noreferrer');
@@ -1262,15 +1273,45 @@ document.addEventListener('DOMContentLoaded', () => {
           rowContent.style.transform = 'translateX(0px)';
         }
         currentDx = 0;
-        isHorizontalSwipe = false;
-      });
+        directionLocked = false;
+        isHorizontal = false;
+      }
 
+      // Eventos táctiles para smartphones / tablets
+      rowContent.addEventListener('touchstart', (e) => {
+        if (e.touches.length !== 1) return;
+        startSwipe(e.touches[0].clientX, e.touches[0].clientY, e.target);
+      }, { passive: true });
+
+      rowContent.addEventListener('touchmove', (e) => {
+        if (e.touches.length !== 1) return;
+        moveSwipe(e.touches[0].clientX, e.touches[0].clientY, e);
+      }, { passive: false });
+
+      rowContent.addEventListener('touchend', endSwipe);
       rowContent.addEventListener('touchcancel', () => {
+        isTracking = false;
         rowContent.style.transition = 'transform 0.2s ease';
         rowContent.style.transform = 'translateX(0px)';
         row.classList.remove('swiping-right', 'swiping-left');
         currentDx = 0;
-        isHorizontalSwipe = false;
+        directionLocked = false;
+        isHorizontal = false;
+      });
+
+      // Eventos de ratón para pruebas en emulador móvil o PC
+      rowContent.addEventListener('mousedown', (e) => {
+        if (e.button !== 0) return;
+        if (startSwipe(e.clientX, e.clientY, e.target)) {
+          const onMouseMove = (ev) => moveSwipe(ev.clientX, ev.clientY, ev);
+          const onMouseUp = () => {
+            endSwipe();
+            window.removeEventListener('mousemove', onMouseMove);
+            window.removeEventListener('mouseup', onMouseUp);
+          };
+          window.addEventListener('mousemove', onMouseMove);
+          window.addEventListener('mouseup', onMouseUp);
+        }
       });
     }
 
