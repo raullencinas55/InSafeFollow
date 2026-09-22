@@ -1,0 +1,24 @@
+{
+  "name": "insafefollow",
+  "version": "1.3.0",
+  "description": "Auditoría de seguidores y seguidos en Instagram sin contraseñas, 100% en el navegador (ISO/IEC 25010 & DSR compliant)",
+  "main": "js/app.js",
+  "scripts": {
+    "test": "node tests/test_storage.js"
+  },
+  "keywords": [
+    "instagram",
+    "followers",
+    "unfollowers",
+    "privacy",
+    "gdpr",
+    "security",
+    "iso25010"
+  ],
+  "author": "InSafeFollow",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/raullencinas55/InSafeFollow.git"
+  }
+}

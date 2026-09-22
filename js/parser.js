@@ -3,7 +3,14 @@
  * Utiliza fflate para descomprimir en memoria de forma segura, privada y eficiente.
  */
 
-window.InstagramParser = (function () {
+(function (root, factory) {
+  if (typeof module === 'object' && module.exports) {
+    module.exports = factory();
+  } else {
+    root.InstagramParser = factory();
+  }
+}(typeof self !== 'undefined' ? self : this, function () {
+  'use strict';
   /**
    * Extrae de forma universal usuarios y metadatos de las diversas estructuras de Meta
    * (string_list_data, label_values, arrays, objetos anidados)
@@ -59,14 +66,19 @@ window.InstagramParser = (function () {
       // 1. Extraer desde label_values (formato moderno de Meta)
       if (Array.isArray(item.label_values)) {
         for (const lv of item.label_values) {
-          const lbl = (lv.label || '').toLowerCase();
-          const val = (lv.value || '').trim();
+          const lbl = (lv.label ? String(lv.label) : '').toLowerCase();
+          const val = typeof lv.value === 'string' ? lv.value.trim() : (lv.value != null ? String(lv.value).trim() : '');
           if (lbl.includes('usuario') || lbl.includes('username')) {
             username = val;
           } else if (lbl.includes('nombre') || lbl.includes('name')) {
             displayName = val;
           } else if (lbl.includes('url') && val) {
             href = val;
+          } else if ((lbl.includes('fecha') || lbl.includes('date') || lbl.includes('time')) && lv.value) {
+            const num = Number(lv.value);
+            if (!isNaN(num) && num > 0) {
+              timestamp = num > 1e11 ? num : num * 1000;
+            }
           }
         }
       }
@@ -229,4 +241,4 @@ window.InstagramParser = (function () {
     parseZip,
     extractItemsUniversal
   };
-})();
+}));

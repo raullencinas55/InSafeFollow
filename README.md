@@ -1,10 +1,11 @@
 # InSafeFollow 🛡️ — Auditoría Privada y Segura de Conexiones
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![CI](https://github.com/raullencinas55/InSafeFollow/actions/workflows/ci.yml/badge.svg)](https://github.com/raullencinas55/InSafeFollow/actions)
 [![Architecture: 100% Client-Side](https://img.shields.io/badge/Architecture-100%25%20Client--Side-brightgreen.svg)](#-arquitectura-técnica-y-decisiones-de-ingeniería)
 [![Algorithm: O(N) Complexity](https://img.shields.io/badge/Algorithm-O(N)%20Set%20Diffs-blue.svg)](#1-complejidad-algorítmica-on-vs-on2)
+[![Security: CSP connect-src none](https://img.shields.io/badge/Security-CSP%20connect--src%20'none'-success.svg)](#)
 [![Style: Neobrutalism](https://img.shields.io/badge/UI-Neobrutalism-orange.svg)](#-sistema-de-diseño-neobrutalista)
-[![Zero Server Dependencies](https://img.shields.io/badge/Zero-Server%20Cost-black.svg)](#)
 
 > **InSafeFollow** es una aplicación web estática, 100% client-side y de código abierto, diseñada para auditar conexiones y detectar quién te dejó de seguir en Instagram **sin contraseñas, sin bots, sin APIs privadas y con cero riesgo de baneo**, amparada bajo el derecho internacional a la portabilidad de datos personales (**RGPD Art. 20 / CCPA**).
 
@@ -149,6 +150,12 @@ Para fines académicos, auditorías de calidad o revisión de arquitectura en pr
 │   ├── 02_SECURITY_AND_COMPLIANCE.md
 │   ├── 03_QUALITY_AND_TESTING_ISO25010.md
 │   └── 04_SOFTWARE_ARCHITECTURE_DESIGN.md
+├── tests/            # Suites de pruebas automatizadas (ISO 25010)
+│   ├── test_storage.js  # Pruebas unitarias de teoría de conjuntos y funciones puras
+│   └── test_e2e.py      # Pruebas de integración E2E con Selenium en viewport móvil
+├── .github/
+│   └── workflows/
+│       └── ci.yml    # Pipeline de CI en GitHub Actions (Node.js 18, 20, 22)
 ├── css/
 │   ├── main.css      # Variables de diseño globales y tokens neobrutalistas
 │   ├── landing.css   # Estilos de la página de inicio
@@ -158,8 +165,12 @@ Para fines académicos, auditorías de calidad o revisión de arquitectura en pr
 │   │   └── fflate.js # Descompresor ZIP nativo en memoria (32 KB, UMD)
 │   ├── parser.js     # Parser universal y normalizador de esquemas de Meta
 │   ├── storage.js    # Motor de snapshots O(N) y persistencia en localStorage
-│   ├── app.js        # Controlador principal, gestos táctiles y gráfico SVG
+│   ├── chart.js      # Módulo matemático y visualizador SVG responsive desacoplado
+│   ├── gestures.js   # Máquina de estados táctil con Direction Lock para swipes
+│   ├── app.js        # Orquestador del Dashboard
 │   └── landing.js    # Lógica interactiva de la página de presentación
+├── CHANGELOG.md      # Historial de cambios bajo estándar Keep a Changelog
+├── package.json      # Configuración de scripts de testing automatizado (npm test)
 ├── .gitignore        # Reglas de exclusión para privacidad y dependencias
 ├── LICENSE           # Licencia MIT
 └── README.md
@@ -167,9 +178,28 @@ Para fines académicos, auditorías de calidad o revisión de arquitectura en pr
 
 ---
 
+## 🧪 Pruebas Automatizadas y Calidad de Software (ISO/IEC 25010)
+
+El proyecto cuenta con verificación continua y suites de prueba automatizadas:
+
+### 1. Pruebas Unitarias y de Robustez (Node.js)
+Verifican el cálculo de diferencias de teoría de conjuntos, snapshots temporales, listas blancas y normalización de esquemas:
+```bash
+npm test
+# O directamente: node tests/test_storage.js
+```
+
+### 2. Pruebas de Integración y E2E (Selenium Headless)
+Verifican la ausencia de excepciones JavaScript en consola, el cumplimiento estricto de CSP (`connect-src 'none'`) y la responsividad del dashboard en pantallas móviles (375px):
+```bash
+python tests/test_e2e.py
+```
+
+---
+
 ## 🛠️ Ejecución Local
 
-No requiere Node.js, compiladores ni dependencias externas:
+No requiere compiladores ni dependencias de backend:
 
 ```bash
 # Clonar el repositorio
@@ -179,7 +209,6 @@ git clone https://github.com/raullencinas55/InSafeFollow.git
 cd InSafeFollow
 
 # Abrir con cualquier servidor local o directamente en el navegador
-# Ejemplo con Python:
 python -m http.server 8000
 ```
 Abre `http://localhost:8000` en tu navegador.

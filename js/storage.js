@@ -1,8 +1,18 @@
 /**
  * storage.js - Administrador de estado, snapshots y persistencia local en localStorage.
+ * Cumple con ISO/IEC 25010 (Modularidad, Testabilidad y Robustez de Datos).
  */
 
-window.InSafeFollowStorage = (function () {
+(function (root, factory) {
+  if (typeof module === 'object' && module.exports) {
+    module.exports = factory();
+  } else {
+    root.InSafeFollowStorage = factory();
+    root.InsafeFollowStorage = root.InSafeFollowStorage;
+    root.SafeFollowStorage = root.InSafeFollowStorage;
+  }
+}(typeof self !== 'undefined' ? self : this, function () {
+  'use strict';
   const KEY_CURRENT = 'insafefollow_current_snapshot';
   const KEY_PREVIOUS = 'insafefollow_previous_snapshot';
   const KEY_WHITELIST = 'insafefollow_whitelist';
@@ -91,24 +101,32 @@ window.InSafeFollowStorage = (function () {
    *
    * @returns {Object|null} Retorna el objeto de diferencias particionado o null si no hay snapshot activo.
    */
-  function calculateDiffs() {
-    const current = getCurrentSnapshot();
+  function calculateDiffs(overrideCurrent, overridePrevious, overrideWhitelist) {
+    const current = overrideCurrent !== undefined ? overrideCurrent : getCurrentSnapshot();
     if (!current) return null;
 
-    const previous = getPreviousSnapshot();
-    const whitelist = getWhitelist();
-    const whitelistSet = new Set(whitelist.map(u => u.toLowerCase()));
+    const previous = overridePrevious !== undefined ? overridePrevious : getPreviousSnapshot();
+    const whitelist = overrideWhitelist !== undefined ? (overrideWhitelist || []) : getWhitelist();
+    const whitelistSet = new Set((Array.isArray(whitelist) ? whitelist : []).map(u => String(u).toLowerCase()));
+
+    const rawFollowing = Array.isArray(current.following) ? current.following : [];
+    const rawFollowers = Array.isArray(current.followers) ? current.followers : [];
 
     const followingMap = new Map();
-    current.following.forEach(u => followingMap.set(u.username.toLowerCase(), u));
+    rawFollowing.forEach(u => {
+      if (u && u.username) followingMap.set(u.username.toLowerCase(), u);
+    });
 
     const followersMap = new Map();
-    current.followers.forEach(u => followersMap.set(u.username.toLowerCase(), u));
+    rawFollowers.forEach(u => {
+      if (u && u.username) followersMap.set(u.username.toLowerCase(), u);
+    });
 
     // 1. No te siguen de vuelta (Following - Followers)
     const notFollowingBack = [];
     const whitelistedUsers = [];
-    current.following.forEach(u => {
+    rawFollowing.forEach(u => {
+      if (!u || !u.username) return;
       const lower = u.username.toLowerCase();
       if (!followersMap.has(lower)) {
         if (whitelistSet.has(lower)) {
@@ -121,7 +139,8 @@ window.InSafeFollowStorage = (function () {
 
     // 2. Fans (Followers - Following)
     const fans = [];
-    current.followers.forEach(u => {
+    rawFollowers.forEach(u => {
+      if (!u || !u.username) return;
       const lower = u.username.toLowerCase();
       if (!followingMap.has(lower)) {
         fans.push(u);
@@ -130,7 +149,8 @@ window.InSafeFollowStorage = (function () {
 
     // 3. Seguimiento Mutuo (Following ∩ Followers)
     const mutual = [];
-    current.following.forEach(u => {
+    rawFollowing.forEach(u => {
+      if (!u || !u.username) return;
       const lower = u.username.toLowerCase();
       if (followersMap.has(lower)) {
         mutual.push(u);
@@ -141,12 +161,15 @@ window.InSafeFollowStorage = (function () {
     const unfollowedYou = [];
     const newFollowers = [];
 
-    if (previous && previous.followers) {
+    if (previous && Array.isArray(previous.followers)) {
       const prevFollowersMap = new Map();
-      previous.followers.forEach(u => prevFollowersMap.set(u.username.toLowerCase(), u));
+      previous.followers.forEach(u => {
+        if (u && u.username) prevFollowersMap.set(u.username.toLowerCase(), u);
+      });
 
       // Quienes estaban antes pero ya no están ahora
       previous.followers.forEach(u => {
+        if (!u || !u.username) return;
         const lower = u.username.toLowerCase();
         if (!followersMap.has(lower)) {
           unfollowedYou.push(u);
@@ -154,7 +177,8 @@ window.InSafeFollowStorage = (function () {
       });
 
       // Nuevos seguidores (están ahora pero no antes)
-      current.followers.forEach(u => {
+      rawFollowers.forEach(u => {
+        if (!u || !u.username) return;
         const lower = u.username.toLowerCase();
         if (!prevFollowersMap.has(lower)) {
           newFollowers.push(u);
@@ -193,8 +217,4 @@ window.InSafeFollowStorage = (function () {
     removeFromWhitelist,
     calculateDiffs
   };
-})();
-
-// Alias para compatibilidad
-window.InsafeFollowStorage = window.InSafeFollowStorage;
-window.SafeFollowStorage = window.InSafeFollowStorage;
+}));
