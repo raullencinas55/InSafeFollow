@@ -4,7 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#fcf9f2">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https://www.instagram.com; connect-src 'none'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src https://fonts.gstatic.com; img-src 'self' data: https://www.instagram.com; connect-src 'none'; frame-src 'none'; object-src 'none'; worker-src 'self'; base-uri 'self'; form-action 'self';">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><path d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/></svg>">
+  <link rel="manifest" href="manifest.webmanifest">
+  <title>InSafeFollow • Dashboard de Auditoría Privada</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
@@ -90,9 +93,14 @@
           <span class="text-desktop">Arrastra tu archivo <code>.zip</code> aquí o pulsa para seleccionarlo. Conforme al derecho de portabilidad (RGPD), el análisis ocurre 100% en tu dispositivo.</span>
           <span class="text-touch">Toca para seleccionar tu archivo <code>.zip</code> descargado de Meta. Conforme al derecho de portabilidad (RGPD), el análisis ocurre 100% en tu dispositivo.</span>
         </p>
-        <button type="button" class="btn btn-primary">
-          Seleccionar archivo .ZIP
-        </button>
+        <div style="display: flex; flex-direction: column; align-items: center; gap: 10px; width: 100%; max-width: 320px; margin: 0 auto; position: relative; z-index: 20;">
+          <button type="button" class="btn btn-primary" style="width: 100%; position: relative; z-index: 20;">
+            Seleccionar archivo .ZIP
+          </button>
+          <button type="button" id="loadDemoBtn" class="btn btn-secondary" style="width: 100%; font-size: 0.82rem; position: relative; z-index: 20;" title="Explora el dashboard inmediatamente con datos de muestra realistas">
+            ⚡ Probar con Datos de Demostración
+          </button>
+        </div>
       </section>
 
       <!-- Spinner de Procesamiento -->

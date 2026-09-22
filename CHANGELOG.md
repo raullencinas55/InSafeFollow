@@ -9,13 +9,17 @@ y este proyecto se adhiere a [Semantic Versioning](https://semver.org/lang/es/).
 
 ## [1.3.0] - 2026-09-21
 
-### Añadido
+- **Botón de Demostración Instantánea en Dashboard (`app.html`)**: Permite a reclutadores y evaluadores explorar el Bento Grid, gráfico de crecimiento y listas interactivas en 1 clic sin necesidad de archivo `.zip` personal.
+- **Capacidades PWA y Soporte Offline-First (`sw.js` y `manifest.webmanifest`)**: Aplicación instalable en dispositivos móviles con Service Worker para funcionamiento en Modo Avión sin conexión.
+- **Favicon SVG Neobrutalista**: Escudo vectorizado integrado vía URI de datos en `index.html` y `app.html` sin impacto de red.
+- **Gobernanza de Código Abierto**: Incorporación de `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md` (Contributor Covenant 2.1) y plantillas de incidencias (`.github/ISSUE_TEMPLATE/`).
+- **Verificación Estática en CI**: Comando `npm run lint` (`node --check`) integrado en el pipeline de GitHub Actions previo a las pruebas.
 - **Módulo de Visualización Desacoplado (`js/chart.js`)**: Algoritmo de agregación temporal (`computeGrowthData`) y motor SVG responsive aislados en un módulo UMD puro bajo directrices de mantenibilidad ISO/IEC 25010.
 - **Motor de Gestos Táctiles Aislado (`js/gestures.js`)**: Máquina de estados con bloqueo direccional estricto (*Direction Lock* a 6px) y umbrales físicos para gestos de arrastre táctil y ratón.
 - **Suite de Pruebas Unitarias Automatizadas (`tests/test_storage.js`)**: 10 casos de prueba que evalúan teoría de conjuntos, snapshots temporales, listas blancas, extracción de esquemas Meta y funciones puras.
 - **Suite de Pruebas de Integración y E2E (`tests/test_e2e.py`)**: Ejecutor automatizado con Selenium headless verificando renderizado móvil (375px), ausencia de excepciones JavaScript y directivas CSP.
 - **Integración Continua (`.github/workflows/ci.yml`)**: Pipeline de GitHub Actions ejecutando pruebas unitarias en Node.js 18, 20 y 22.
-- **Content Security Policy Estricta (CSP)**: Implementación de cabecera con directiva `connect-src 'none'` en `index.html` y `app.html` que impide por diseño cualquier fuga o transmisión de datos fuera del navegador del usuario.
+- **Content Security Policy Estricta (CSP)**: Implementación de cabecera con directivas `connect-src 'none'` y `worker-src 'self'` en `index.html` y `app.html`.
 - **Dossier de Documentación Formal de Ingeniería (`docs/`)**:
   - `01_RESEARCH_DSR_METHODOLOGY.md`: Metodología Design Science Research (Peffers et al., 2007).
   - `02_SECURITY_AND_COMPLIANCE.md`: Modelado de amenazas STRIDE, Matriz de Riesgos y RGPD Art. 20.

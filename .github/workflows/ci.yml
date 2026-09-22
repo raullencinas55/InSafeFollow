@@ -24,5 +24,8 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
 
+    - name: Verify JavaScript Syntax & Static Linting
+      run: npm run lint
+
     - name: Execute ISO 25010 Test Suite
       run: npm test

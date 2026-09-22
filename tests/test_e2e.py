@@ -23,6 +23,7 @@ def run_e2e():
     opts.add_argument("--no-sandbox")
     opts.add_argument("--disable-dev-shm-usage")
     opts.add_argument("--disable-gpu")
+    opts.add_argument("--allow-file-access-from-files")
     opts.set_capability("goog:loggingPrefs", {"browser": "ALL"})
 
     driver = webdriver.Chrome(options=opts)
@@ -116,6 +117,16 @@ def run_e2e():
         svg_bars = driver.find_elements(By.CSS_SELECTOR, "#chartSvgWrap rect.chart-bar")
         assert len(svg_bars) > 0, "No se generaron barras SVG en el grafico desacoplado"
         print(f"  [OK] Grafico SVG interactivo generado correctamente ({len(svg_bars)} barras renderizadas)")
+
+        # TEST 4: Boton de demostracion instantanea para reclutadores en app.html
+        print("[TEST 4] Verificando boton de demostracion instantanea en app.html...")
+        driver.execute_script("localStorage.clear();")
+        driver.get(app_url)
+        WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, "loadDemoBtn")))
+        demo_btn = driver.find_element(By.ID, "loadDemoBtn")
+        demo_btn.click()
+        WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.ID, "dashboardContent")))
+        print("  [OK] Boton 'Probar con Datos de Demostracion' activo y funcional")
 
         # Comprobar logs finales en app.html
         app_logs = driver.get_log("browser")

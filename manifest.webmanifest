@@ -1,0 +1,20 @@
+{
+  "name": "InSafeFollow • Auditoría Privada de Conexiones",
+  "short_name": "InSafeFollow",
+  "description": "Auditoría de seguidores y conexiones en Instagram 100% en tu navegador y sin contraseñas.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#fcf9f2",
+  "theme_color": "#fcf9f2",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23fcf9f2' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><rect width='24' height='24' rx='5' fill='%23fcf9f2'/><path d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/></svg>",
+      "sizes": "192x192 512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["utilities", "productivity", "social"]
+}

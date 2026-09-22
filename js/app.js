@@ -151,6 +151,11 @@ document.addEventListener('DOMContentLoaded', () => {
   function init() {
     setupEventListeners();
     loadExistingData();
+
+    // Registro defensivo de Service Worker para soporte PWA y Offline
+    if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
+      navigator.serviceWorker.register('./sw.js').catch(() => {});
+    }
   }
 
   function setupEventListeners() {
@@ -180,11 +185,20 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       // Asegurar que hacer clic en el botón de la dropzone abra el diálogo
-      const selectBtn = dropzone.querySelector('button');
+      const selectBtn = dropzone.querySelector('button.btn-primary');
       if (selectBtn) {
         selectBtn.addEventListener('click', (e) => {
           e.stopPropagation();
           fileInput.click();
+        });
+      }
+
+      // Botón para cargar datos de prueba inmediatos (Reclutadores / Portfolio)
+      const loadDemoBtn = document.getElementById('loadDemoBtn');
+      if (loadDemoBtn) {
+        loadDemoBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          loadDemoDataset();
         });
       }
     }
@@ -476,6 +490,75 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       showUploadOnly();
     }
+  }
+
+  /**
+   * Carga un conjunto de datos realista de demostración en un clic (Modo Reclutador / Portfolio)
+   */
+  function loadDemoDataset() {
+    setLoading(true);
+    setTimeout(() => {
+      const now = Date.now();
+      const MS_DAY = 24 * 60 * 60 * 1000;
+
+      const sampleFollowing = [
+        { username: 'design_daily', name: 'Daily Design Inspiration', timestamp: now - 380 * MS_DAY },
+        { username: 'tech_insider', name: 'Tech Insider', timestamp: now - 310 * MS_DAY },
+        { username: 'react_core', name: 'React Developers', timestamp: now - 250 * MS_DAY },
+        { username: 'alex_martinez', name: 'Alex Martínez', timestamp: now - 200 * MS_DAY },
+        { username: 'sarah_dev', name: 'Sarah Connor Dev', timestamp: now - 180 * MS_DAY },
+        { username: 'lukas_photo', name: 'Lukas Photography', timestamp: now - 150 * MS_DAY },
+        { username: 'crypto_daily', name: 'Crypto News', timestamp: now - 120 * MS_DAY },
+        { username: 'sofia_ux', name: 'Sofía UI/UX', timestamp: now - 90 * MS_DAY },
+        { username: 'marcos_g', name: 'Marcos Gómez', timestamp: now - 60 * MS_DAY },
+        { username: 'travel_vibes', name: 'Travel Worldwide', timestamp: now - 45 * MS_DAY },
+        { username: 'julia_code', name: 'Julia Code & Coffee', timestamp: now - 30 * MS_DAY },
+        { username: 'david_frontend', name: 'David Frontend', timestamp: now - 15 * MS_DAY },
+        { username: 'emma_creative', name: 'Emma Creative Studio', timestamp: now - 5 * MS_DAY },
+        { username: 'carlos_fullstack', name: 'Carlos Fullstack', timestamp: now - 2 * MS_DAY }
+      ];
+
+      const sampleFollowers = [
+        { username: 'alex_martinez', name: 'Alex Martínez', timestamp: now - 200 * MS_DAY },
+        { username: 'sarah_dev', name: 'Sarah Connor Dev', timestamp: now - 175 * MS_DAY },
+        { username: 'sofia_ux', name: 'Sofía UI/UX', timestamp: now - 85 * MS_DAY },
+        { username: 'julia_code', name: 'Julia Code & Coffee', timestamp: now - 28 * MS_DAY },
+        { username: 'camila_rodriguez', name: 'Camila R.', timestamp: now - 140 * MS_DAY },
+        { username: 'pedro_pascal_fan', name: 'Pedro Pascal Fan', timestamp: now - 110 * MS_DAY },
+        { username: 'web_creators_hub', name: 'Web Creators Hub', timestamp: now - 40 * MS_DAY }
+      ];
+
+      const demoSnapshot = {
+        accountOwner: 'demo_portfolio',
+        parsedAt: new Date().toISOString(),
+        following: sampleFollowing,
+        followers: sampleFollowers,
+        pendingRequests: [
+          { username: 'private_account_99', name: 'John Doe', timestamp: now - 12 * MS_DAY }
+        ],
+        recentlyUnfollowed: [
+          { username: 'old_friend', name: 'Old Friend', timestamp: now - 4 * MS_DAY }
+        ],
+        blockedProfiles: [
+          { username: 'spam_bot_404', name: '', timestamp: now - 90 * MS_DAY }
+        ],
+        hideStoryFrom: [],
+        receivedRequests: [],
+        followingHashtags: [
+          { username: 'javascript', name: '', timestamp: now - 300 * MS_DAY },
+          { username: 'webdevelopment', name: '', timestamp: now - 220 * MS_DAY }
+        ],
+        closeFriends: [
+          { username: 'sarah_dev', name: 'Sarah Connor Dev', timestamp: now - 180 * MS_DAY }
+        ],
+        restrictedProfiles: []
+      };
+
+      InSafeFollowStorage.saveNewSnapshot(demoSnapshot);
+      currentDiffs = InSafeFollowStorage.calculateDiffs();
+      renderDashboard();
+      setLoading(false);
+    }, 250);
   }
 
   async function handleFile(file) {

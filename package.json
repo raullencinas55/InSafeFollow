@@ -4,6 +4,7 @@
   "description": "Auditoría de seguidores y seguidos en Instagram sin contraseñas, 100% en el navegador (ISO/IEC 25010 & DSR compliant)",
   "main": "js/app.js",
   "scripts": {
+    "lint": "node --check js/app.js js/chart.js js/gestures.js js/landing.js js/parser.js js/storage.js tests/test_storage.js sw.js",
     "test": "node tests/test_storage.js"
   },
   "keywords": [

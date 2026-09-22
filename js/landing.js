@@ -505,5 +505,9 @@ document.addEventListener('DOMContentLoaded', () => {
   updateViewportMode();
   setActiveNavSection('hero-view');
 
+  // Registro de Service Worker para soporte PWA y Offline
+  if ('serviceWorker' in navigator && window.location.protocol.startsWith('http')) {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  }
 });
 
