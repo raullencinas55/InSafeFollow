@@ -128,6 +128,29 @@ def run_e2e():
         WebDriverWait(driver, 5).until(EC.visibility_of_element_located((By.ID, "dashboardContent")))
         print("  [OK] Boton 'Probar con Datos de Demostracion' activo y funcional")
 
+        # TEST 5: Verificacion ergonomica de botones responsive (ISO 25010 Usabilidad)
+        print("[TEST 5] Verificando ergonomia de botones de fila (solo icono en movil, texto en desktop)...")
+        # Abrir lista en movil (375px)
+        not_following_card = driver.find_element(By.CSS_SELECTOR, '.metric-widget[data-tab="notFollowingBack"]')
+        not_following_card.click()
+        WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, ".user-item-row")))
+
+        mobile_btn = driver.find_element(By.CSS_SELECTOR, ".user-item-row .row-action-btn")
+        span_elem = mobile_btn.find_element(By.TAG_NAME, "span")
+        span_display = span_elem.value_of_css_property("display")
+        assert span_display == "none", f"En movil (375px) el texto del boton debe estar oculto, obtenido display: {span_display}"
+        assert mobile_btn.size["width"] <= 36, f"En movil el boton debe ser cuadrado compacto (<=36px), obtenido ancho: {mobile_btn.size['width']}"
+        print(f"  [OK] En movil (375px): Boton compacto {mobile_btn.size['width']}x{mobile_btn.size['height']}px sin texto redundante")
+
+        # Cambiar a desktop (1200px) y verificar que el texto del boton se despliega
+        driver.set_window_size(1200, 900)
+        desktop_btn = driver.find_element(By.CSS_SELECTOR, ".user-item-row .row-action-btn")
+        desktop_span = desktop_btn.find_element(By.TAG_NAME, "span")
+        desktop_display = desktop_span.value_of_css_property("display")
+        assert desktop_display != "none", f"En desktop (1200px) el texto del boton debe ser visible, obtenido display: {desktop_display}"
+        assert desktop_btn.size["width"] > 50, f"En desktop el boton debe incluir texto (ancho > 50px), obtenido: {desktop_btn.size['width']}"
+        print(f"  [OK] En desktop (1200px): Boton expandido {desktop_btn.size['width']}x{desktop_btn.size['height']}px con etiqueta '{desktop_btn.text}'")
+
         # Comprobar logs finales en app.html
         app_logs = driver.get_log("browser")
         app_severe = [l for l in app_logs if l["level"] == "SEVERE"]
