@@ -128,11 +128,27 @@ La interfaz fue diseñada con una estética **Neobrutalism** contemporánea:
 
 ---
 
+## 📚 Expediente Técnico y Documentación Formal
+
+Para fines académicos, auditorías de calidad o revisión de arquitectura en procesos de selección senior, consulta la documentación técnica y metodológica completa en la carpeta [`docs/`](docs/):
+
+* 🔬 **[01. Metodología de Investigación (DSR) & Gobernanza ISO 21502 / ISO 12207](docs/01_RESEARCH_DSR_METHODOLOGY.md)**: Justificación teórica, preguntas de investigación (RQ1-RQ3), ciclo DSR de Peffers, matriz de riesgos PMO y ciclo de vida del software.
+* 🔒 **[02. Expediente de Seguridad, Privacidad y Cumplimiento RGPD/CCPA](docs/02_SECURITY_AND_COMPLIANCE.md)**: Modelo de amenazas STRIDE, análisis de vectores de ataque XSS, tabnabbing, aislamiento en RAM y amparo bajo el Art. 20 del RGPD.
+* 📊 **[03. Plan de Aseguramiento de Calidad (QA), Evaluación ISO/IEC 25010 y Suite de Pruebas](docs/03_QUALITY_AND_TESTING_ISO25010.md)**: Evaluación de las 8 dimensiones SQuaRE, benchmarks empíricos de rendimiento $O(N)$ vs $O(N^2)$ y matriz de casos de prueba con Selenium.
+* 🏛️ **[04. Documento de Arquitectura de Software (SAD) y Sistema de Diseño](docs/04_SOFTWARE_ARCHITECTURE_DESIGN.md)**: Modelo C4 (Contexto, Contenedores, Componentes), diagramas de secuencia UML, máquina de estados táctil y tokens Neobrutalistas.
+
+---
+
 ## 📂 Estructura del Código
 
 ```text
 ├── index.html        # Landing Page interactiva, guía visual y sandbox
 ├── app.html          # Dashboard principal, Bento Grid y visualizador
+├── docs/             # Expediente técnico y metodológico formal (DSR, ISOs, SAD)
+│   ├── 01_RESEARCH_DSR_METHODOLOGY.md
+│   ├── 02_SECURITY_AND_COMPLIANCE.md
+│   ├── 03_QUALITY_AND_TESTING_ISO25010.md
+│   └── 04_SOFTWARE_ARCHITECTURE_DESIGN.md
 ├── css/
 │   ├── main.css      # Variables de diseño globales y tokens neobrutalistas
 │   ├── landing.css   # Estilos de la página de inicio
