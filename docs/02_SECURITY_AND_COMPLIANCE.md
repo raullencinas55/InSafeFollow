@@ -48,7 +48,29 @@ La premisa fundamental de diseño de **InSafeFollow** es la **minimización radi
 ### 2.2 CCPA (California Consumer Privacy Act)
 Conforme al Código Civil de California § 1798.100, los consumidores tienen derecho a acceder y transportar su información personal. InSafeFollow no comercializa ni intercambia datos de usuarios (*Zero Data Selling*), cumpliendo automáticamente con los estándares más restrictivos de la CCPA.
 
-### 2.3 Doctrina de Uso Legítimo Nominativo de Marcas (*Nominative Fair Use*)
+### 2.3 Marco Jurídico Argentino: Ley Nacional N° 25.326 (Protección de los Datos Personales)
+* **Principio de Licitud y Finalidad (Art. 4):**
+  Los datos personales procesados corresponden estrictamente a la exportación solicitada por el propio titular a Meta Platforms Inc. InSafeFollow no recopila, almacena ni somete a tratamiento datos con fines publicitarios, mercantiles ni de cesión a terceros.
+* **Inexistencia de Base de Datos Centralizada (Art. 2 y Art. 3):**
+  La aplicación no constituye un "archivo, registro, base o banco de datos" sometido a inscripción en el Registro Nacional de Bases de Datos (AAIP), dado que opera como un software utilitario puramente local para uso exclusivamente personal y privado del titular de los datos.
+* **Seguridad y Confidencialidad de la Información (Art. 9 y 10):**
+  Se cumple con la exigencia legal de adoptar las medidas técnicas y organizativas necesarias para garantizar la seguridad y confidencialidad de los datos personales, evitando su adulteración, pérdida, consulta o tratamiento no autorizado, garantizado mediante el aislamiento de red (CSP `connect-src 'none'`).
+* **Autodeterminación Informativa (Art. 14):**
+  El usuario ejerce plenamente su derecho a conocer, verificar y auditar el estado de sus relaciones en la plataforma sin intermediarios.
+
+### 2.4 Homologación con Normas IRAM (Instituto Argentino de Normalización y Certificación)
+* **IRAM-ISO/IEC 27001 (Sistemas de Gestión de Seguridad de la Información):**
+  - Control A.8.24 (Uso de criptografía y protección de almacenamiento local).
+  - Control A.8.26 (Arquitectura de sistemas segura y principios de ingeniería: aislamiento de procesos, defensa en profundidad).
+  - Control A.8.28 (Codificación segura: prevención de inyección XSS, sanitización de entradas, ausencia de `eval()`).
+* **IRAM-ISO/IEC 25010 (Ingeniería de Software — Calidad del Producto de Software):**
+  - Evaluación rigurosa de las 8 características de calidad: Adecuación funcional, Eficiencia de desempeño, Compatibilidad, Usabilidad, Fiabilidad, Seguridad, Mantenibilidad y Portabilidad.
+* **IRAM-ISO/IEC 12207 (Procesos del Ciclo de Vida del Software):**
+  - Definición formal de los procesos de desarrollo, verificación automatizada, aseguramiento de la calidad y mantenimiento correctivo/perfectivo.
+* **IRAM-ISO 21502 (Orientación sobre la Gestión de Proyectos / PMO):**
+  - Gestión integral de alcance, riesgos de ciberseguridad, gestión de la configuración (Git) y entrega continua de artefactos de valor verificables.
+
+### 2.5 Doctrina de Uso Legítimo Nominativo de Marcas (*Nominative Fair Use*)
 InSafeFollow no está afiliado, respaldado ni patrocinado por Meta Platforms, Inc. Las denominaciones *"Instagram"* y *"Meta"* se utilizan con un propósito exclusivamente referencial e informativo para describir la procedencia del archivo `.zip` que la aplicación es capaz de interpretar, amparado bajo el principio legal internacional de *Nominative Fair Use*.
 
 ---
