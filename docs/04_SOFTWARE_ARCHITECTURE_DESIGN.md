@@ -45,7 +45,9 @@ graph LR
         end
 
         subgraph "Capa de Control y Lógica (Controller & Logic Layer)"
-            AppJS["app.js (Controlador, Gestos Táctiles, SVG Chart)"]
+            AppJS["app.js (Orquestador del Dashboard)"]
+            ChartJS["chart.js (Motor Matemático & SVG Responsive)"]
+            GesturesJS["gestures.js (Gestos Táctiles con Direction Lock)"]
             LandingJS["landing.js (Interacciones de Inicio & Sandbox)"]
         end
 
@@ -63,6 +65,8 @@ graph LR
     HTML --> AppJS
     HTML --> LandingJS
     CSS --> HTML
+    AppJS --> ChartJS
+    AppJS --> GesturesJS
     AppJS --> ParserJS
     AppJS --> StorageJS
     ParserJS --> FflateJS
