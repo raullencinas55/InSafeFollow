@@ -80,10 +80,11 @@
       }
 
       if (e && e.cancelable) e.preventDefault();
-      currentDx = Math.max(-opts.maxDisplacementPx, Math.min(opts.maxDisplacementPx, dx));
+      const maxRight = onSwipeRight ? opts.maxDisplacementPx : 0;
+      currentDx = Math.max(-opts.maxDisplacementPx, Math.min(maxRight, dx));
       rowContent.style.transform = `translateX(${currentDx}px)`;
 
-      if (currentDx > opts.visualFeedbackPx) {
+      if (onSwipeRight && currentDx > opts.visualFeedbackPx) {
         row.classList.add('swiping-right');
         row.classList.remove('swiping-left');
       } else if (currentDx < -opts.visualFeedbackPx) {
@@ -100,11 +101,11 @@
       rowContent.style.transition = 'transform 0.22s cubic-bezier(0.16, 1, 0.3, 1)';
       row.classList.remove('swiping-right', 'swiping-left');
 
-      if (currentDx > opts.thresholdPx) {
+      if (onSwipeRight && currentDx > opts.thresholdPx) {
         // Deslizar a la derecha: Acción primaria (Archivar o Restaurar)
         rowContent.style.transform = 'translateX(105%)';
         setTimeout(() => {
-          if (onSwipeRight) onSwipeRight(user);
+          onSwipeRight(user);
         }, 180);
       } else if (currentDx < -opts.thresholdPx) {
         // Deslizar a la izquierda: Acción secundaria (Abrir Instagram)

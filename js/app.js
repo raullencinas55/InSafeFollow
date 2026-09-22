@@ -800,13 +800,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const toggleArchivedListBtn = document.getElementById('toggleArchivedListBtn');
     if (toggleArchivedListBtn) {
-      const isArchived = (tab === 'whitelistedUsers');
-      toggleArchivedListBtn.classList.toggle('active', isArchived);
-      if (isArchived) {
-        toggleArchivedListBtn.innerHTML = '← Volver a No te siguen';
+      const isArchiveRelated = (tab === 'notFollowingBack' || tab === 'whitelistedUsers');
+      if (isArchiveRelated) {
+        toggleArchivedListBtn.style.display = 'inline-flex';
+        const isArchived = (tab === 'whitelistedUsers');
+        toggleArchivedListBtn.classList.toggle('active', isArchived);
+        if (isArchived) {
+          toggleArchivedListBtn.innerHTML = '← Volver a No te siguen';
+        } else {
+          const count = (currentDiffs && currentDiffs.whitelistedUsers) ? currentDiffs.whitelistedUsers.length : 0;
+          toggleArchivedListBtn.innerHTML = `📦 Archivadas (<span id="archivedChipCount">${count}</span>)`;
+        }
       } else {
-        const count = (currentDiffs && currentDiffs.whitelistedUsers) ? currentDiffs.whitelistedUsers.length : 0;
-        toggleArchivedListBtn.innerHTML = `📦 Archivadas (<span id="archivedChipCount">${count}</span>)`;
+        toggleArchivedListBtn.style.display = 'none';
+      }
+    }
+
+    const swipeHintBar = document.getElementById('swipeHintBar');
+    if (swipeHintBar) {
+      if (tab === 'notFollowingBack') {
+        swipeHintBar.innerHTML = '<span>👉 Desliza a la derecha para <b>Archivar</b> • Izquierda para <b>Ver Perfil</b> 👈</span>';
+        swipeHintBar.style.display = 'flex';
+      } else if (tab === 'whitelistedUsers') {
+        swipeHintBar.innerHTML = '<span>👉 Desliza a la derecha para <b>Restaurar</b> • Izquierda para <b>Ver Perfil</b> 👈</span>';
+        swipeHintBar.style.display = 'flex';
+      } else {
+        swipeHintBar.innerHTML = '<span>👉 Desliza a la izquierda para <b>Ver Perfil en Instagram</b> 👈</span>';
+        swipeHintBar.style.display = 'flex';
       }
     }
 
@@ -977,9 +997,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const safeInitial = escapeHtml(initial);
     const safeDate = dateString ? escapeHtml(dateString) : '';
 
+    const canSwipeRight = isArchivedTab || isNotFollowingBack;
+    const swipeRightLabel = isArchivedTab ? '↩️ Restaurar' : '📦 Archivar';
+
     row.innerHTML = `
       <div class="user-row-swipe-bg">
-        <span class="swipe-action-label-left">${isArchivedTab ? '↩️ Restaurar' : '📦 Archivar'}</span>
+        <span class="swipe-action-label-left" style="${canSwipeRight ? '' : 'visibility: hidden;'}">${swipeRightLabel}</span>
         <span class="swipe-action-label-right">Instagram ↗</span>
       </div>
       <div class="user-row-content">
@@ -1026,9 +1049,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const rowContent = row.querySelector('.user-row-content');
     if (rowContent && window.InSafeFollowGestures) {
       window.InSafeFollowGestures.bindSwipe(row, rowContent, user, {
-        onSwipeRight: () => {
-          handleArchiveToggle(user.username, activeTab === 'whitelistedUsers');
-        },
+        onSwipeRight: canSwipeRight ? () => {
+          handleArchiveToggle(user.username, isArchivedTab);
+        } : null,
         onSwipeLeft: () => {
           window.open(igUrl, '_blank', 'noopener,noreferrer');
         }
