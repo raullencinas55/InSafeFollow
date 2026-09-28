@@ -246,6 +246,25 @@ runTest('Debe gestionar la rotación de snapshots temporales sin contaminar hist
   assert.strictEqual(diffs.newFollowers[0].username, 'joiner_d');
 });
 
+runTest('Debe conservar todos los usuarios archivados en whitelistedUsers aunque no estén en el following actual', () => {
+  global.localStorage.clear();
+  InSafeFollowStorage.addToWhitelist('archived_artist');
+  InSafeFollowStorage.addToWhitelist('archived_brand');
+
+  const newSnapshot = {
+    accountOwner: 'user_test',
+    following: [{ username: 'archived_artist', timestamp: 1000 }, { username: 'new_person', timestamp: 2000 }],
+    followers: [{ username: 'someone_else', timestamp: 3000 }]
+  };
+
+  const diffs = InSafeFollowStorage.calculateDiffs(newSnapshot, null);
+  assert.strictEqual(diffs.whitelistedUsers.length, 2);
+  const usernames = diffs.whitelistedUsers.map(u => u.username).sort();
+  assert.deepStrictEqual(usernames, ['archived_artist', 'archived_brand']);
+  assert.strictEqual(diffs.notFollowingBack.some(u => u.username === 'archived_artist'), false);
+  assert.strictEqual(diffs.notFollowingBack.some(u => u.username === 'new_person'), true);
+});
+
 // -----------------------------------------------------------
 // SUITE 3: InSafeFollowChart - Cálculo de Crecimiento
 // -----------------------------------------------------------

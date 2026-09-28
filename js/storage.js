@@ -164,7 +164,7 @@
     const list = getWhitelist();
     const payload = {
       app: 'InSafeFollow',
-      version: '1.3.2',
+      version: '1.3.3',
       exportedAt: new Date().toISOString(),
       count: list.length,
       archivedUsernames: list
@@ -288,15 +288,27 @@
     // 1. No te siguen de vuelta (Following - Followers)
     const notFollowingBack = [];
     const whitelistedUsers = [];
+    const matchedWhitelist = new Set();
+
     rawFollowing.forEach(u => {
       if (!u || !u.username) return;
       const lower = u.username.toLowerCase();
-      if (!followersMap.has(lower)) {
-        if (whitelistSet.has(lower)) {
-          whitelistedUsers.push(u);
-        } else {
-          notFollowingBack.push(u);
-        }
+      if (whitelistSet.has(lower)) {
+        whitelistedUsers.push(u);
+        matchedWhitelist.add(lower);
+      } else if (!followersMap.has(lower)) {
+        notFollowingBack.push(u);
+      }
+    });
+
+    // Garantizar que toda cuenta archivada en la whitelist se conserve en la vista de Archivadas
+    whitelistSet.forEach(lower => {
+      if (!matchedWhitelist.has(lower)) {
+        whitelistedUsers.push({
+          username: lower,
+          name: '',
+          timestamp: null
+        });
       }
     });
 

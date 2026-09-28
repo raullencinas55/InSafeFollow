@@ -5,22 +5,22 @@
  * con fallback instantáneo a Caché cuando se utiliza sin conexión o en modo avión.
  */
 
-const CACHE_NAME = 'insafefollow-v1.3.2';
+const CACHE_NAME = 'insafefollow-v1.3.3';
 const STATIC_ASSETS = [
   './',
   './index.html',
   './app.html',
   './manifest.webmanifest',
-  './css/main.css?v=1.3.2',
-  './css/landing.css?v=1.3.2',
-  './css/app.css?v=1.3.2',
+  './css/main.css?v=1.3.3',
+  './css/landing.css?v=1.3.3',
+  './css/app.css?v=1.3.3',
   './js/vendor/fflate.js',
-  './js/parser.js?v=1.3.2',
-  './js/storage.js?v=1.3.2',
-  './js/chart.js?v=1.3.2',
-  './js/gestures.js?v=1.3.2',
-  './js/landing.js?v=1.3.2',
-  './js/app.js?v=1.3.2'
+  './js/parser.js?v=1.3.3',
+  './js/storage.js?v=1.3.3',
+  './js/chart.js?v=1.3.3',
+  './js/gestures.js?v=1.3.3',
+  './js/landing.js?v=1.3.3',
+  './js/app.js?v=1.3.3'
 ];
 
 self.addEventListener('install', (event) => {

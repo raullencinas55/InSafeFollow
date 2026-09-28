@@ -1,6 +1,6 @@
 {
   "name": "insafefollow",
-  "version": "1.3.0",
+  "version": "1.3.3",
   "description": "Auditoría de seguidores y seguidos en Instagram sin contraseñas, 100% en el navegador (ISO/IEC 25010 & DSR compliant)",
   "main": "js/app.js",
   "scripts": {
