@@ -187,32 +187,55 @@
             }
           }
 
-          // 1. Following (cuentas que sigues - soporte para following.json, following_1.json, siguiendo.json, etc.)
+          function extractUsernamesFromHtml(htmlString) {
+            const regex = /<a[^>]+href=["']https?:\/\/(?:www\.)?instagram\.com\/(?:_u\/)?([a-zA-Z0-9._]+)\/?["'][^>]*>/gi;
+            const res = [];
+            const seen = new Set();
+            let m;
+            while ((m = regex.exec(htmlString)) !== null) {
+              const u = m[1].toLowerCase();
+              if (!['explore', 'p', 'reel', 'stories', 'tv', 'direct', '_u'].includes(u) && !seen.has(u)) {
+                seen.add(u);
+                res.push({ username: m[1], name: '', timestamp: null });
+              }
+            }
+            return res;
+          }
+
+          // 1. Following (cuentas que sigues - soporte para JSON y HTML, archivos divididos y nombres en español)
           let followingData = [];
           const followingFiles = files.filter(f => 
             !f.includes('hashtags') &&
-            (f.match(/(?:following|siguiendo)(?:_\d+)?\.json$/i) || f.endsWith('following.json'))
+            (f.match(/(?:following|siguiendo)(?:_\d+)?\.(?:json|html)$/i) || f.endsWith('following.json') || f.endsWith('following.html'))
           );
           followingFiles.forEach(fPath => {
             try {
               const content = textDecoder.decode(unzipped[fPath]);
-              const json = JSON.parse(content);
-              followingData = followingData.concat(extractItemsUniversal(json, 'relationships_following'));
+              if (fPath.toLowerCase().endsWith('.html')) {
+                followingData = followingData.concat(extractUsernamesFromHtml(content));
+              } else {
+                const json = JSON.parse(content);
+                followingData = followingData.concat(extractItemsUniversal(json, 'relationships_following'));
+              }
             } catch (e) {
               console.warn(`No se pudo parsear ${fPath}`, e);
             }
           });
 
-          // 2. Followers (cuentas que te siguen - followers_1.json, followers_2.json, seguidores.json, etc.)
+          // 2. Followers (cuentas que te siguen - soporte para JSON y HTML, archivos divididos y nombres en español)
           let followersData = [];
           const followerFiles = files.filter(f => 
-            f.match(/(?:followers|seguidores)(?:_\d+)?\.json$/i) || f.endsWith('followers.json')
+            f.match(/(?:followers|seguidores)(?:_\d+)?\.(?:json|html)$/i) || f.endsWith('followers.json') || f.endsWith('followers.html')
           );
           followerFiles.forEach(fPath => {
             try {
               const content = textDecoder.decode(unzipped[fPath]);
-              const json = JSON.parse(content);
-              followersData = followersData.concat(extractItemsUniversal(json, 'relationships_followers'));
+              if (fPath.toLowerCase().endsWith('.html')) {
+                followersData = followersData.concat(extractUsernamesFromHtml(content));
+              } else {
+                const json = JSON.parse(content);
+                followersData = followersData.concat(extractItemsUniversal(json, 'relationships_followers'));
+              }
             } catch (e) {
               console.warn(`No se pudo parsear ${fPath}`, e);
             }

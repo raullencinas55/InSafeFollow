@@ -204,6 +204,15 @@
             </div>
           </section>
 
+          <!-- Alerta de Discrepancia por Rango de Fechas Incompleto en Meta -->
+          <div id="anomalousAlertBanner" class="anomalous-alert-card" style="display: none;">
+            <div class="anomalous-alert-icon">⚠️</div>
+            <div class="anomalous-alert-body">
+              <strong>Posible descarga incompleta de Meta</strong>
+              <p>Tu archivo anterior tenía <span id="prevFollowerCountSpan">0</span> seguidores pero este nuevo archivo solo contiene <span id="currFollowerCountSpan">0</span>. Si las cuentas que ves en <em>"Te dejaron de seguir"</em> siguen siendo tus seguidores en Instagram, al solicitar la exportación dejaste el <strong>Intervalo de fechas</strong> en <em>"Última semana"</em> o <em>"Último mes"</em>. Recuerda marcar <strong>"Desde el principio"</strong> (Todo el historial) en Meta.</p>
+            </div>
+          </div>
+
           <!-- Bento Grid de Métricas -->
           <section class="bento-metrics-grid">
             <div class="metric-widget" data-tab="notFollowingBack">

@@ -265,6 +265,39 @@ runTest('Debe conservar todos los usuarios archivados en whitelistedUsers aunque
   assert.strictEqual(diffs.notFollowingBack.some(u => u.username === 'new_person'), true);
 });
 
+runTest('Debe excluir cuentas archivadas de unfollowedYou (te dejaron de seguir) para mantener la lista limpia', () => {
+  const oldSnapshot = {
+    following: [],
+    followers: [
+      { username: 'archived_friend', timestamp: 1000 },
+      { username: 'real_unfollower', timestamp: 1000 }
+    ]
+  };
+  const newSnapshot = {
+    following: [],
+    followers: []
+  };
+
+  const whitelist = ['archived_friend'];
+  const diffs = InSafeFollowStorage.calculateDiffs(newSnapshot, oldSnapshot, whitelist);
+  assert.strictEqual(diffs.unfollowedYou.length, 1);
+  assert.strictEqual(diffs.unfollowedYou[0].username, 'real_unfollower');
+  assert.strictEqual(diffs.unfollowedYou.some(u => u.username === 'archived_friend'), false);
+});
+
+runTest('Debe detectar y alertar ante caídas anómalas de seguidores (exportaciones con rango de fechas corto en Meta)', () => {
+  const oldFollowers = [];
+  for (let i = 0; i < 200; i++) {
+    oldFollowers.push({ username: `user_${i}`, timestamp: 1000 + i });
+  }
+  const oldSnapshot = { following: [], followers: oldFollowers };
+  // Supongamos que en el nuevo archivo solo hay 5 seguidores (por ejemplo por rango de fechas de última semana en Meta)
+  const newSnapshot = { following: [], followers: [{ username: 'user_0', timestamp: 2000 }] };
+
+  const diffs = InSafeFollowStorage.calculateDiffs(newSnapshot, oldSnapshot, []);
+  assert.strictEqual(diffs.isAnomalousDrop, true);
+});
+
 // -----------------------------------------------------------
 // SUITE 3: InSafeFollowChart - Cálculo de Crecimiento
 // -----------------------------------------------------------

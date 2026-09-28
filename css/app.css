@@ -1483,6 +1483,42 @@ html, body {
   border-color: #000000;
 }
 
+/* Alerta de anomalía en importación */
+.anomalous-alert-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: #fef08a;
+  border: 2px solid #000000;
+  box-shadow: 3px 3px 0px #000000;
+  padding: 14px 18px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+}
+
+.anomalous-alert-icon {
+  font-size: 1.6rem;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.anomalous-alert-body strong {
+  display: block;
+  font-family: 'Space Grotesk', -apple-system, sans-serif;
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #000000;
+  margin-bottom: 4px;
+}
+
+.anomalous-alert-body p {
+  margin: 0;
+  font-size: 0.84rem;
+  color: #1f2937;
+  line-height: 1.45;
+  font-weight: 500;
+}
+
 /* Spinner */
 .loading-box {
   display: none;

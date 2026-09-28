@@ -756,6 +756,21 @@ document.addEventListener('DOMContentLoaded', () => {
       activeCategoryBadge.className = (activeTab === 'notFollowingBack' || activeTab === 'unfollowedYou') ? 'badge badge-danger' : 'badge badge-success';
     }
 
+    const anomalousAlertBanner = document.getElementById('anomalousAlertBanner');
+    if (anomalousAlertBanner) {
+      if (currentDiffs && currentDiffs.isAnomalousDrop) {
+        const prevCount = (currentDiffs.previous && currentDiffs.previous.followers) ? currentDiffs.previous.followers.length : 0;
+        const currCount = (currentDiffs.current && currentDiffs.current.followers) ? currentDiffs.current.followers.length : 0;
+        const prevSpan = document.getElementById('prevFollowerCountSpan');
+        const currSpan = document.getElementById('currFollowerCountSpan');
+        if (prevSpan) prevSpan.textContent = prevCount;
+        if (currSpan) currSpan.textContent = currCount;
+        anomalousAlertBanner.style.display = 'flex';
+      } else {
+        anomalousAlertBanner.style.display = 'none';
+      }
+    }
+
     showAppOverview();
 
     // Resetear paginación y renderizar

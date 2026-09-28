@@ -342,12 +342,14 @@
         if (u && u.username) prevFollowersMap.set(u.username.toLowerCase(), u);
       });
 
-      // Quienes estaban antes pero ya no están ahora
+      // Quienes estaban antes pero ya no están ahora (excluyendo archivadas para mantener la lista limpia)
       previous.followers.forEach(u => {
         if (!u || !u.username) return;
         const lower = u.username.toLowerCase();
         if (!followersMap.has(lower)) {
-          unfollowedYou.push(u);
+          if (!whitelistSet.has(lower)) {
+            unfollowedYou.push(u);
+          }
         }
       });
 
@@ -361,9 +363,17 @@
       });
     }
 
+    const isAnomalousDrop = Boolean(
+      previous &&
+      Array.isArray(previous.followers) &&
+      previous.followers.length >= 50 &&
+      rawFollowers.length < previous.followers.length * 0.3
+    );
+
     return {
       current,
       previous,
+      isAnomalousDrop,
       notFollowingBack,
       unfollowedYou,
       newFollowers,
