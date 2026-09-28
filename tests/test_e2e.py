@@ -151,6 +151,22 @@ def run_e2e():
         assert desktop_btn.size["width"] > 50, f"En desktop el boton debe incluir texto (ancho > 50px), obtenido: {desktop_btn.size['width']}"
         print(f"  [OK] En desktop (1200px): Boton expandido {desktop_btn.size['width']}x{desktop_btn.size['height']}px con etiqueta '{desktop_btn.text}'")
 
+        # TEST 6: Verificación de exportar e importar lista de archivadas
+        print("[TEST 6] Verificando controles de exportar e importar en pestaña de archivadas...")
+        whitelisted_tab_btn = driver.find_element(By.CSS_SELECTOR, '.segment-btn[data-tab="whitelistedUsers"]')
+        whitelisted_tab_btn.click()
+
+        export_btn = driver.find_element(By.ID, "exportWhitelistBtn")
+        import_btn = driver.find_element(By.ID, "importWhitelistBtn")
+        assert export_btn.is_displayed(), "El botón de exportar archivadas debe estar visible en la pestaña whitelistedUsers"
+        assert import_btn.is_displayed(), "El botón de importar archivadas debe estar visible en la pestaña whitelistedUsers"
+
+        # Verificar existencia de opciones correspondientes en el Drawer
+        drawer_export = driver.find_element(By.ID, "drawerExportWhitelistBtn")
+        drawer_import = driver.find_element(By.ID, "drawerImportWhitelistBtn")
+        assert drawer_export is not None and drawer_import is not None, "Botones de exportar/importar en el drawer ausentes"
+        print("  [OK] Botones de exportar e importar archivadas activos y visibles en whitelistedUsers")
+
         # Comprobar logs finales en app.html
         app_logs = driver.get_log("browser")
         app_severe = [l for l in app_logs if l["level"] == "SEVERE"]

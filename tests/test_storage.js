@@ -159,6 +159,93 @@ runTest('Debe agregar y remover usuarios de la whitelist (idempotencia)', () => 
   assert.deepStrictEqual(InSafeFollowStorage.getWhitelist(), []);
 });
 
+runTest('Debe exportar e importar la lista blanca en formato JSON estructurado', () => {
+  global.localStorage.clear();
+  InSafeFollowStorage.addToWhitelist('creator_one');
+  InSafeFollowStorage.addToWhitelist('brand_account');
+
+  const exportedJson = InSafeFollowStorage.exportWhitelistJson();
+  const parsed = JSON.parse(exportedJson);
+  assert.strictEqual(parsed.app, 'InSafeFollow');
+  assert.strictEqual(parsed.count, 2);
+  assert.deepStrictEqual(parsed.archivedUsernames.sort(), ['brand_account', 'creator_one']);
+
+  // Limpiar y luego importar desde el JSON exportado
+  global.localStorage.clear();
+  const importResult = InSafeFollowStorage.importWhitelist(exportedJson);
+  assert.strictEqual(importResult.success, true);
+  assert.strictEqual(importResult.added, 2);
+  assert.deepStrictEqual(InSafeFollowStorage.getWhitelist().sort(), ['brand_account', 'creator_one']);
+});
+
+runTest('Debe importar listas de usuarios desde array, texto plano y con caracteres @', () => {
+  global.localStorage.clear();
+  InSafeFollowStorage.addToWhitelist('existing_user');
+
+  // Importar mezcla de texto con @, espacios y mayúsculas
+  const rawText = `
+    @New_User_1
+    @brand_account
+    existing_user
+  `;
+  const resultText = InSafeFollowStorage.importWhitelist(rawText);
+  assert.strictEqual(resultText.success, true);
+  assert.strictEqual(resultText.added, 2); // new_user_1 y brand_account (existing_user ya existía)
+
+  // Importar desde array de objetos o strings
+  const rawArray = ['another_user', { username: '@object_user' }];
+  const resultArray = InSafeFollowStorage.importWhitelist(rawArray);
+  assert.strictEqual(resultArray.success, true);
+  assert.strictEqual(resultArray.added, 2);
+
+  const finalWhitelist = InSafeFollowStorage.getWhitelist();
+  assert.strictEqual(finalWhitelist.includes('new_user_1'), true);
+  assert.strictEqual(finalWhitelist.includes('brand_account'), true);
+  assert.strictEqual(finalWhitelist.includes('another_user'), true);
+  assert.strictEqual(finalWhitelist.includes('object_user'), true);
+});
+
+runTest('Debe gestionar la rotación de snapshots temporales sin contaminar histórico ni sobrescribir re-subidas', () => {
+  global.localStorage.clear();
+
+  const day1 = {
+    accountOwner: 'roberto_dev',
+    parsedAt: '2026-09-20T10:00:00Z',
+    following: [{ username: 'friend_a', timestamp: 1000 }, { username: 'friend_b', timestamp: 1000 }],
+    followers: [{ username: 'friend_a', timestamp: 1000 }, { username: 'friend_b', timestamp: 1000 }, { username: 'leaver_c', timestamp: 1000 }]
+  };
+
+  const day5 = {
+    accountOwner: 'roberto_dev',
+    parsedAt: '2026-09-25T10:00:00Z',
+    following: [{ username: 'friend_a', timestamp: 1000 }, { username: 'friend_b', timestamp: 1000 }],
+    followers: [{ username: 'friend_a', timestamp: 1000 }, { username: 'friend_b', timestamp: 1000 }, { username: 'joiner_d', timestamp: 2000 }]
+    // leaver_c ya no está, joiner_d es nuevo
+  };
+
+  // 1. Guardar primer snapshot
+  InSafeFollowStorage.saveNewSnapshot(day1);
+  assert.strictEqual(InSafeFollowStorage.getPreviousSnapshot(), null);
+  assert.ok(InSafeFollowStorage.getCurrentSnapshot() !== null);
+
+  // 2. Re-subir el mismo snapshot (no debe auto-referenciarse como previous)
+  InSafeFollowStorage.saveNewSnapshot(day1);
+  assert.strictEqual(InSafeFollowStorage.getPreviousSnapshot(), null);
+
+  // 3. Subir snapshot de días después
+  InSafeFollowStorage.saveNewSnapshot(day5);
+  const current = InSafeFollowStorage.getCurrentSnapshot();
+  const previous = InSafeFollowStorage.getPreviousSnapshot();
+  assert.ok(previous !== null, 'Previous snapshot debe existir tras subir snapshot posterior');
+
+  // 4. Calcular diferencias entre snapshots
+  const diffs = InSafeFollowStorage.calculateDiffs(current, previous, []);
+  assert.strictEqual(diffs.unfollowedYou.length, 1);
+  assert.strictEqual(diffs.unfollowedYou[0].username, 'leaver_c');
+  assert.strictEqual(diffs.newFollowers.length, 1);
+  assert.strictEqual(diffs.newFollowers[0].username, 'joiner_d');
+});
+
 // -----------------------------------------------------------
 // SUITE 3: InSafeFollowChart - Cálculo de Crecimiento
 // -----------------------------------------------------------
@@ -233,6 +320,30 @@ runTest('Debe extraer usuarios desde la estructura legacy string_list_data', () 
   assert.strictEqual(extracted.length, 1);
   assert.strictEqual(extracted[0].username, 'artist_fan');
   assert.strictEqual(extracted[0].timestamp, 1670000000000);
+});
+
+runTest('Debe recuperar el nombre de usuario desde el href cuando title o value están vacíos', () => {
+  const edgeCaseJson = [
+    {
+      title: '',
+      string_list_data: [
+        {
+          value: '',
+          timestamp: 1690000000,
+          href: 'https://www.instagram.com/_u/photographer_pro/'
+        }
+      ]
+    },
+    {
+      title: '',
+      href: 'https://www.instagram.com/designer_elite'
+    }
+  ];
+
+  const extracted = InstagramParser.extractItemsUniversal(edgeCaseJson, 'followers');
+  assert.strictEqual(extracted.length, 2);
+  assert.strictEqual(extracted[0].username, 'photographer_pro');
+  assert.strictEqual(extracted[1].username, 'designer_elite');
 });
 
 // -----------------------------------------------------------

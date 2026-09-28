@@ -456,6 +456,23 @@
               <button type="button" class="filter-chip-btn chip-archived-toggle" id="toggleArchivedListBtn" title="Ver cuentas archivadas / ignoradas">
                 📦 Archivadas (<span id="archivedChipCount">0</span>)
               </button>
+              <button type="button" class="filter-chip-btn chip-export-whitelist" id="exportWhitelistBtn" title="Exportar cuentas archivadas en formato JSON" style="display: none;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                <span>Exportar</span>
+              </button>
+              <button type="button" class="filter-chip-btn chip-import-whitelist" id="importWhitelistBtn" title="Importar cuentas archivadas desde archivo JSON o texto" style="display: none;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                <span>Importar</span>
+              </button>
+              <input type="file" id="importWhitelistInput" accept=".json,.txt" class="file-input-hidden" style="display: none;">
             </div>
           </div>
 
@@ -714,6 +731,22 @@
             <line x1="10" y1="12" x2="14" y2="12"></line>
           </svg>
           <span>Cuentas archivadas</span>
+        </button>
+        <button id="drawerExportWhitelistBtn" class="drawer-link" style="text-align: left; width: 100%;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span>Exportar archivadas (.json)</span>
+        </button>
+        <button id="drawerImportWhitelistBtn" class="drawer-link" style="text-align: left; width: 100%;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="17 8 12 3 7 8"></polyline>
+            <line x1="12" y1="3" x2="12" y2="15"></line>
+          </svg>
+          <span>Importar archivadas</span>
         </button>
         <button id="drawerUploadBtn" class="drawer-link primary" style="text-align: left; width: 100%;">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">

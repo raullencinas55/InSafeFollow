@@ -97,13 +97,33 @@
         }
       }
 
-      // 3. Fallbacks de título o timestamp directo
+      // 3. Fallbacks de título, value o propiedad directa
       if (!username && item.title) {
         username = item.title.trim();
       }
       if (!username && item.value) {
         username = item.value.trim();
       }
+      if (!username && item.username) {
+        username = String(item.username).trim();
+      }
+
+      // Fallback si href está en la raíz del item
+      if (!href && item.href) {
+        href = item.href;
+      }
+
+      // 4. Extracción desde URL href si Meta dejó value y title vacíos
+      if (!username && href) {
+        const urlMatch = href.match(/instagram\.com\/(?:_u\/)?([a-zA-Z0-9._]+)/i);
+        if (urlMatch && urlMatch[1]) {
+          const candidate = urlMatch[1].toLowerCase();
+          if (!['explore', 'p', 'reel', 'stories', 'tv', 'direct'].includes(candidate)) {
+            username = urlMatch[1];
+          }
+        }
+      }
+
       if (!timestamp && item.timestamp) {
         timestamp = typeof item.timestamp === 'number' ? item.timestamp * 1000 : null;
       }
@@ -118,7 +138,14 @@
       }
     }
 
-    return results;
+    // Deduplicación defensiva en memoria por username
+    const seen = new Set();
+    return results.filter(u => {
+      const lower = u.username.toLowerCase();
+      if (seen.has(lower)) return false;
+      seen.add(lower);
+      return true;
+    });
   }
 
   /**
@@ -160,12 +187,27 @@
             }
           }
 
-          // 1. Following (cuentas que sigues)
-          let followingData = parseFile('following.json', 'relationships_following');
+          // 1. Following (cuentas que sigues - soporte para following.json, following_1.json, siguiendo.json, etc.)
+          let followingData = [];
+          const followingFiles = files.filter(f => 
+            !f.includes('hashtags') &&
+            (f.match(/(?:following|siguiendo)(?:_\d+)?\.json$/i) || f.endsWith('following.json'))
+          );
+          followingFiles.forEach(fPath => {
+            try {
+              const content = textDecoder.decode(unzipped[fPath]);
+              const json = JSON.parse(content);
+              followingData = followingData.concat(extractItemsUniversal(json, 'relationships_following'));
+            } catch (e) {
+              console.warn(`No se pudo parsear ${fPath}`, e);
+            }
+          });
 
-          // 2. Followers (cuentas que te siguen - pueden ser followers_1.json, followers_2.json, etc.)
+          // 2. Followers (cuentas que te siguen - followers_1.json, followers_2.json, seguidores.json, etc.)
           let followersData = [];
-          const followerFiles = files.filter(f => f.match(/followers_\d+\.json$/) || f.endsWith('followers.json'));
+          const followerFiles = files.filter(f => 
+            f.match(/(?:followers|seguidores)(?:_\d+)?\.json$/i) || f.endsWith('followers.json')
+          );
           followerFiles.forEach(fPath => {
             try {
               const content = textDecoder.decode(unzipped[fPath]);
@@ -175,6 +217,21 @@
               console.warn(`No se pudo parsear ${fPath}`, e);
             }
           });
+
+          // Deduplicar listas consolidadas
+          const dedupe = (list) => {
+            const seen = new Set();
+            return list.filter(u => {
+              if (!u || !u.username) return false;
+              const lower = u.username.toLowerCase();
+              if (seen.has(lower)) return false;
+              seen.add(lower);
+              return true;
+            });
+          };
+
+          followingData = dedupe(followingData);
+          followersData = dedupe(followersData);
 
           // 3. Solicitudes pendientes enviadas
           const pendingRequestsData = parseFile('pending_follow_requests.json', 'relationships_follow_requests_sent');
@@ -208,7 +265,20 @@
           }
 
           let accountOwner = '';
-          if (zipFile && zipFile.name) {
+          // Intentar extraer de personal_information.json si existe
+          const personalInfoFile = files.find(f => f.endsWith('personal_information.json'));
+          if (personalInfoFile) {
+            try {
+              const pInfo = JSON.parse(textDecoder.decode(unzipped[personalInfoFile]));
+              if (pInfo && pInfo.profile_user && pInfo.profile_user[0] && pInfo.profile_user[0].string_map_data) {
+                const map = pInfo.profile_user[0].string_map_data;
+                const userEntry = map['Nombre de usuario'] || map['Username'] || map['username'];
+                if (userEntry && userEntry.value) accountOwner = String(userEntry.value).trim();
+              }
+            } catch (e) {}
+          }
+
+          if (!accountOwner && zipFile && zipFile.name) {
             const match = zipFile.name.match(/^instagram-([a-zA-Z0-9._]+)-/i);
             if (match) {
               accountOwner = match[1];

@@ -50,9 +50,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const drawerLegalBtn = document.getElementById('drawerLegalBtn');
   const drawerUploadBtn = document.getElementById('drawerUploadBtn');
   const drawerResetBtn = document.getElementById('drawerResetBtn');
+  const drawerExportWhitelistBtn = document.getElementById('drawerExportWhitelistBtn');
+  const drawerImportWhitelistBtn = document.getElementById('drawerImportWhitelistBtn');
 
   // Controles de Ordenación y Herramientas de Lista
   const listToolbar = document.getElementById('listToolbar');
+  const exportWhitelistBtn = document.getElementById('exportWhitelistBtn');
+  const importWhitelistBtn = document.getElementById('importWhitelistBtn');
+  const importWhitelistInput = document.getElementById('importWhitelistInput');
 
   // Controles del Gráfico de Crecimiento
   const toggleChartBtn = document.getElementById('toggleChartBtn');
@@ -89,6 +94,87 @@ document.addEventListener('DOMContentLoaded', () => {
       .replace(/>/g, '&gt;')
       .replace(/"/g, '&quot;')
       .replace(/'/g, '&#039;');
+  }
+
+  let toastTimeout = null;
+  /**
+   * Notificación flotante accesible (Neobrutalismo)
+   * @param {string} message
+   * @param {'info'|'success'|'warning'|'danger'} type
+   * @param {number} duration
+   */
+  function showToast(message, type = 'info', duration = 3200) {
+    let toast = document.getElementById('insafeToast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'insafeToast';
+      toast.className = 'insafe-toast';
+      document.body.appendChild(toast);
+    }
+    toast.textContent = message;
+    toast.className = `insafe-toast toast-${type} active`;
+    if (toastTimeout) clearTimeout(toastTimeout);
+    toastTimeout = setTimeout(() => {
+      toast.classList.remove('active');
+    }, duration);
+  }
+
+  /**
+   * Descarga las cuentas archivadas en un archivo JSON estructurado
+   */
+  function handleExportWhitelist() {
+    const list = InSafeFollowStorage.getWhitelist();
+    if (!list || list.length === 0) {
+      showToast('No tienes cuentas en la lista de archivadas.', 'warning');
+      return;
+    }
+    const jsonStr = InSafeFollowStorage.exportWhitelistJson();
+    const blob = new Blob([jsonStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `insafefollow_archivadas_${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast(`Se exportaron ${list.length} cuentas archivadas con éxito.`, 'success');
+  }
+
+  /**
+   * Procesa el archivo de importación de archivadas y actualiza el estado
+   * @param {File} file
+   */
+  function handleImportWhitelistFile(file) {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const content = e.target.result;
+        const result = InSafeFollowStorage.importWhitelist(content);
+        if (result.success) {
+          showToast(result.message, 'success');
+          refreshDashboardData();
+          if (activeTab !== 'whitelistedUsers') {
+            switchTab('whitelistedUsers', true);
+          }
+        } else {
+          showToast(result.message || 'Error al importar archivo.', 'warning');
+        }
+      } catch (err) {
+        showToast('Error al leer el archivo de archivadas.', 'danger');
+      }
+      if (importWhitelistInput) {
+        importWhitelistInput.value = '';
+      }
+    };
+    reader.onerror = () => {
+      showToast('No se pudo leer el archivo seleccionado.', 'danger');
+      if (importWhitelistInput) {
+        importWhitelistInput.value = '';
+      }
+    };
+    reader.readAsText(file);
   }
 
   /**
@@ -334,6 +420,21 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
+    // Botones de Exportar e Importar Archivadas (Toolbar)
+    if (exportWhitelistBtn) {
+      exportWhitelistBtn.addEventListener('click', handleExportWhitelist);
+    }
+    if (importWhitelistBtn && importWhitelistInput) {
+      importWhitelistBtn.addEventListener('click', () => {
+        importWhitelistInput.click();
+      });
+      importWhitelistInput.addEventListener('change', (e) => {
+        if (e.target.files && e.target.files.length > 0) {
+          handleImportWhitelistFile(e.target.files[0]);
+        }
+      });
+    }
+
     // Alternador del Gráfico de Crecimiento
     if (toggleChartBtn && growthChartContainer) {
       toggleChartBtn.addEventListener('click', () => {
@@ -428,6 +529,18 @@ document.addEventListener('DOMContentLoaded', () => {
       drawerArchivedBtn.addEventListener('click', () => {
         closeAppDrawer();
         switchTab('whitelistedUsers', true);
+      });
+    }
+    if (drawerExportWhitelistBtn) {
+      drawerExportWhitelistBtn.addEventListener('click', () => {
+        closeAppDrawer();
+        handleExportWhitelist();
+      });
+    }
+    if (drawerImportWhitelistBtn && importWhitelistInput) {
+      drawerImportWhitelistBtn.addEventListener('click', () => {
+        closeAppDrawer();
+        importWhitelistInput.click();
       });
     }
     if (drawerUploadBtn) {
@@ -814,6 +927,13 @@ document.addEventListener('DOMContentLoaded', () => {
       } else {
         toggleArchivedListBtn.style.display = 'none';
       }
+    }
+
+    if (exportWhitelistBtn) {
+      exportWhitelistBtn.style.display = (tab === 'whitelistedUsers') ? 'inline-flex' : 'none';
+    }
+    if (importWhitelistBtn) {
+      importWhitelistBtn.style.display = (tab === 'whitelistedUsers') ? 'inline-flex' : 'none';
     }
 
     const swipeHintBar = document.getElementById('swipeHintBar');

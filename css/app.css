@@ -1414,6 +1414,75 @@ html, body {
   color: #ffffff;
 }
 
+.filter-chip-btn.chip-export-whitelist,
+.filter-chip-btn.chip-import-whitelist {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #ffffff;
+  color: #000000;
+  border-color: #000000;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+}
+
+.filter-chip-btn.chip-export-whitelist:hover,
+.filter-chip-btn.chip-import-whitelist:hover {
+  background: var(--color-yellow);
+  transform: translate(-1px, -1px);
+  box-shadow: 2px 2px 0px #000000;
+}
+
+.filter-chip-btn.chip-export-whitelist svg,
+.filter-chip-btn.chip-import-whitelist svg {
+  flex-shrink: 0;
+}
+
+/* Toast Notificaciones Flotantes Neobrutalistas */
+.insafe-toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(30px);
+  background: #ffffff;
+  color: #000000;
+  border: 2.5px solid #000000;
+  box-shadow: 4px 4px 0px #000000;
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  z-index: 99999;
+  opacity: 0;
+  pointer-events: none;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+  max-width: 90vw;
+  text-align: center;
+}
+
+.insafe-toast.active {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.insafe-toast.toast-success {
+  background: #bbf7d0;
+  border-color: #000000;
+}
+
+.insafe-toast.toast-warning {
+  background: #fef08a;
+  border-color: #000000;
+}
+
+.insafe-toast.toast-danger {
+  background: #fecaca;
+  border-color: #000000;
+}
+
 /* Spinner */
 .loading-box {
   display: none;
